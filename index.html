@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071629">
+  <meta name="description" content="MARO Smart Sign Glove — قفاز ذكي تجريبي يعتمد على ESP32 وحساسات الانحناء والحركة لمساعدة المستخدم على تحويل مجموعة من الإشارات المدربة إلى نص وصوت.">
+  <title>MARO Smart Sign Glove | القفاز الذكي</title>
+  <link rel="icon" href="assets/images/student-leader.png">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&display=swap" rel="stylesheet">
+
+</head>
+<body>
+
+<header class="site-header">
+  <a class="brand" href="#home" aria-label="MARO Smart Sign Glove - الصفحة الرئيسية" >
+    <img class="brand-logo"src="assets/images/student-leader.png"alt="MARO - قائد المشروع"width="42"height="42">
+    <span><b>MARO</b><small>SMART SIGN GLOVE</small>
+    </span>
+  </a>
+
+
+  <button class="menu-toggle" id="menuToggle" aria-label="فتح القائمة" aria-expanded="false">☰</button>
+  <nav id="mainNav">
+    <a href="#idea">الفكرة</a><a href="#hardware">المكونات</a><a href="#workflow">آلية العمل</a>
+    <a href="#demo">التجربة</a><a href="#cv">محاكاة الكاميرا</a><a href="#quiz">اختبر نفسك</a><a href="#roadmap">التطوير</a>
+  </nav>
+  <a class="header-cta" href="#demo">جرّب الاتصال</a>
+</header>
+
+<main>
+<section class="hero" id="home">
+  <div class="hero-copy">
+    <span class="eyebrow"><i></i> مشروع ابتكار في الأنظمة المدمجة والبرمجيات</span>
+    <h1>كل إشارة تستحق<br><em>أن يُسمع صوتها</em></h1>
+    <p class="hero-lead">قفاز ذكي تجريبي يلتقط انحناء الأصابع واتجاه اليد، ثم يحوّل الإشارات التي تم تدريب النظام عليها إلى كلمات مكتوبة وصوت مسموع.</p>
+    <div class="hero-actions">
+      <a class="btn primary" href="#idea">اكتشف المشروع <span>←</span></a>
+      <a class="btn ghost" href="#cv">جرّب محاكاة الكاميرا</a>
+    </div>
+    <div class="hero-stats">
+      <div><b>5</b><span>حساسات انحناء</span></div>
+      <div><b>1</b><span>وحدة ESP32</span></div>
+      <div><b>2</b><span>مخرجات نص وصوت</span></div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+    <img src="assets/images/student-leader.png" alt="الطالب صاحب مشروع القفاز الذكي" class="student-photo">
+    <div class="student-tag"><span class="live-dot"></span><div><b>قائد تنفيذ المشروع MARO</b><small>مدارس حديد عز للتكنولوجيا التطبيقية</small></div></div>
+    <div class="floating-chip chip-top">ESP32 · Embedded</div>
+    <div class="floating-chip chip-bottom">Flex Sensors + MPU6050</div>
+  </div>
+</section>
+
+<section class="notice-wrap">
+  <div class="notice"><span class="notice-icon">ⓘ</span><p><b>الدقة العلمية:</b> النسخة الحالية نموذج أولي قابل للتدريب على إشارات ثابتة محددة. ليست مترجما كاملا أو معتمدا للغة الإشارة المصرية، ولا تتضمن حاليا نموذجا للذكاء الاصطناعي مدربا.</p></div>
+</section>
+
+<section class="section intro-grid" id="idea">
+  <div>
+    <span class="section-kicker">01 / الفكرة والمشكلة</span>
+    <h2>التواصل يجب أن يكون<br><em>أسهل للجميع</em></h2>
+  </div>
+  <div class="intro-text">
+    <p>قد يواجه الصم وضعاف السمع أو غير الناطقين صعوبة في التواصل مع أشخاص لا يعرفون لغة الإشارة. يعتمد المشروع على قفاز إلكتروني يقرأ حركات الأصابع واتجاه اليد، ويتعرف على مجموعة إشارات تم تسجيلها وتدريبها مسبقا.</p>
+    <p>عند التعرف على إشارة مسجلة، يعرض النظام معناها على شاشة صغيرة ويشغّل ملفا صوتيا مرتبطا بها، لتسهيل التواصل في المواقف اليومية.</p>
+  </div>
+</section>
+
+<section class="section problem-solution">
+  <article class="info-card problem-card"><span class="card-index">التحدي</span><div class="card-symbol">↔</div><h3>حاجز التواصل</h3><p>عدم معرفة الطرف الآخر بلغة الإشارة قد يجعل توصيل الاحتياجات اليومية أمرا صعبا ويزيد الاعتماد على وسيط.</p></article>
+  <article class="info-card solution-card"><span class="card-index">الحل المقترح</span><div class="card-symbol">⌁</div><h3>قفاز يستشعر الحركة</h3><p>حساسات تقيس انحناء الأصابع ووحدة حركة تلتقط اتجاه اليد، ثم يعالج ESP32 البيانات ويعرض النص ويشغّل الصوت.</p></article>
+</section>
+
+<section class="section hardware-section" id="hardware">
+  <div class="section-heading">
+    <div><span class="section-kicker">02 / المنظومة الإلكترونية</span><h2>المكونات المستخدمة</h2></div>
+    <p>تتوزع المكونات بين الاستشعار والمعالجة والعرض وإخراج الصوت والطاقة.</p>
+  </div>
+  <div class="hardware-grid">
+    <article class="hardware-card featured"><div class="hardware-visual"><span>01</span><b>ESP32</b><div class="chip-graphic">ESP32</div></div><h3>لوحة ESP32-WROOM-32</h3><p>المتحكم الرئيسي؛ يقرأ الحساسات ويعالج القيم وينفذ منطق التعرف.</p><small>المعالجة والتحكم</small></article>
+    <article class="hardware-card"><div class="hardware-visual flex-visual"><span>02</span><b>FLEX × 5</b><div class="finger-lines">〰 〰 〰 〰 〰</div></div><h3>حساسات الانحناء</h3><p>خمسة حساسات، واحد لكل إصبع، لقياس مقدار الانحناء.</p><small>الاستشعار</small></article>
+    <article class="hardware-card"><div class="hardware-visual mpu-visual"><span>03</span><b>MPU6050</b><div class="sensor-ring">✣</div></div><h3>وحدة الحركة MPU6050</h3><p>تقيس التسارع والدوران للمساعدة في تحديد اتجاه اليد وحركتها.</p><small>استشعار الحركة</small></article>
+    <article class="hardware-card"><div class="hardware-visual oled-visual"><span>04</span><b>OLED</b><div class="mini-screen">HELLO<br>مرحبا</div></div><h3>شاشة OLED SSD1306</h3><p>تعرض حالة النظام واسم الإشارة التي تم التعرف عليها.</p><small>عرض النص</small></article>
+    <article class="hardware-card"><div class="hardware-visual audio-visual"><span>05</span><b>DFPLAYER</b><div class="sound-wave">)))</div></div><h3>DFPlayer Mini + سماعة</h3><p>يشغّل ملفات MP3 مسجلة مسبقا مرتبطة بالإشارات.</p><small>الإخراج الصوتي</small></article>
+    <article class="hardware-card"><div class="hardware-visual power-visual"><span>06</span><b>POWER</b><div class="battery">▰</div></div><h3>بطارية + TP4056 + منظم</h3><p>منظومة طاقة محمولة مع شحن خلية واحدة وتنظيم الجهد المناسب.</p><small>الطاقة</small></article>
+  </div>
+  <div class="hardware-note"><b>مكونات مساعدة:</b> خمس مقاومات 10kΩ لمقسمات الجهد، بطاقة microSD، قفاز قماشي، أسلاك مرنة، مفتاح تشغيل، لوحة تجارب وملتيميتر.</div>
+  <div class="gallery-strip">
+    <figure><img src="assets/images/sensor-layout.png" alt="توزيع حساسات الانحناء على الأصابع"><figcaption>توزيع الحساسات على الأصابع</figcaption></figure>
+    <figure><img src="assets/images/glove-wiring.jpg" alt="نموذج توصيل القفاز على لوحة التجارب"><figcaption>نموذج توصيل إلكتروني على لوحة تجارب</figcaption></figure>
+    <figure><img src="assets/images/glove-prototype.png" alt="نموذج القفاز الذكي المركب"><figcaption>نموذج القفاز والمكونات المركبة</figcaption></figure>
+  </div>
+</section>
+
+<section class="section workflow-section" id="workflow">
+  <div class="section-heading"><div><span class="section-kicker">03 / كيف يعمل؟</span><h2>من حركة اليد إلى الصوت</h2></div><p>تسلسل مبسط لرحلة الإشارة داخل النظام.</p></div>
+  <div class="workflow">
+    <div class="flow-step"><span>01</span><div class="flow-icon">✋</div><h3>تكوين الإشارة</h3><p>المستخدم يشكل إشارة بيده.</p></div>
+    <div class="flow-arrow">←</div>
+    <div class="flow-step"><span>02</span><div class="flow-icon">⌁</div><h3>قراءة الحساسات</h3><p>قياس انحناء الأصابع واتجاه اليد.</p></div>
+    <div class="flow-arrow">←</div>
+    <div class="flow-step"><span>03</span><div class="flow-icon">▦</div><h3>المعالجة</h3><p>ESP32 يقارن القراءات بالقوالب المدربة.</p></div>
+    <div class="flow-arrow">←</div>
+    <div class="flow-step"><span>04</span><div class="flow-icon">Aa</div><h3>عرض النص</h3><p>إظهار الكلمة على شاشة OLED.</p></div>
+    <div class="flow-arrow">←</div>
+    <div class="flow-step"><span>05</span><div class="flow-icon">♫</div><h3>إخراج الصوت</h3><p>تشغيل ملف MP3 الموافق للإشارة.</p></div>
+  </div>
+  <div class="architecture">
+    <div class="arch-node sensors">Flex Sensors × 5<br><small>MPU6050</small></div><span>→</span><div class="arch-node controller">ESP32<br><small>قراءة ومعالجة</small></div><span>→</span><div class="arch-node outputs">OLED + DFPlayer<br><small>نص وصوت</small></div>
+  </div>
+</section>
+
+<section class="section demo-section" id="demo">
+  <div class="section-heading"><div><span class="section-kicker">04 / اختبار الاتصال الفعلي</span><h2>اتصل بالقفاز من المتصفح</h2></div><p>تجربة اختيارية عبر USB Serial لقراءة الرسائل التي يرسلها ESP32.</p></div>
+  <div class="demo-panel">
+    <div class="demo-info">
+      <div class="connection-status"><span id="connectionDot"></span><b id="connectionText">غير متصل</b></div>
+      <h3>مراقبة البيانات الحقيقية</h3>
+      <p>استخدم متصفح Chrome أو Edge على كمبيوتر يدعم Web Serial، ثم وصل لوحة ESP32 بكابل USB بيانات واضغط اتصال.</p>
+      <ol><li>اختر منفذ ESP32 من نافذة المتصفح.</li><li>اضبط سرعة الاتصال على 115200.</li><li>حرّك الحساسات أو نفّذ المعايرة وراقب الرسائل.</li></ol>
+      <button class="btn primary" id="connectBtn">اتصال بلوحة ESP32</button>
+      <button class="btn outline" id="disconnectBtn" disabled>إنهاء الاتصال</button>
+      <p class="compat-note" id="serialSupport">التحقق من دعم Web Serial...</p>
+    </div>
+    <div class="serial-screen">
+      <div class="terminal-top"><span></span><span></span><span></span><b>ESP32 SERIAL MONITOR</b><small id="baudLabel">115200 baud</small></div>
+      <div class="terminal-output" id="serialOutput" aria-live="polite"><p class="terminal-muted">بانتظار الاتصال...<br>ستظهر هنا الرسائل الفعلية القادمة من لوحة ESP32.</p></div>
+      <div class="terminal-bottom"><span id="lineCount">0 سطر</span><span>USB · READ ONLY</span></div>
+    </div>
+  </div>
+  <div class="serial-warning"><b>مهم:</b> هذه الأداة تقرأ مخرجات Serial فقط ولا تتحكم في القفاز ولا تستبدل البرنامج الموجود على ESP32. قد لا تعمل على بعض الهواتف أو المتصفحات. يجب أن يكون البرنامج مرفوعا وأن يرسل بيانات عبر المنفذ التسلسلي.</div>
+</section>
+
+<!-- =================== قسم محاكاة الكاميرا (CV) المدمج =================== -->
+<section class="section cv-section" id="cv">
+  <div class="section-heading">
+    <div>
+      <span class="cv-badge"><span class="cv-dot"></span> تعرف تلقائي بالكاميرا</span>
+      <span class="section-kicker">04.5 / محاكاة بديلة بالكاميرا</span>
+      <h2>تدريب وتعرف تلقائي <span>عبر الكاميرا</span></h2>
+    </div>
+    <p>بديل تجريبي يستخدم كاميرا الجهاز ونموذج MediaPipe لرصد اليد، يمكنك من تدريب النظام على إشاراتك ثم تكرارها ليُنطقها فوراً دون الحاجة للقفاز الفعلي.</p>
+  </div>
+
+  <div class="camera-grid">
+    <div class="video-container" id="videoContainer">
+      <video id="webcam" autoplay playsinline></video>
+      <canvas id="overlay"></canvas>
+      <div class="video-placeholder" id="videoPlaceholder">
+        <h3>📷 الكاميرا غير نشطة</h3>
+        <p>اضغط على زر "تشغيل الكاميرا" للبدء</p>
+        <button class="cv-btn cv-btn-primary" id="startCameraBtn" style="margin-top: 15px;">تشغيل الكاميرا</button>
+      </div>
+    </div>
+
+    <div class="cv-panels">
+      <div class="panel">
+        <h3>🖥️ مخرجات النظام</h3>
+        <div class="oled-screen">
+          <div class="oled-text" id="oledText">WAITING</div>
+          <div class="oled-sub" id="oledSub">No gesture detected</div>
+        </div>
+        <div class="status-box" id="statusBox">⚡ جاهز للتعرف...</div>
+      </div>
+
+      <div class="panel" id="trainingPanel">
+        <h3>🧠 تدريب إشارة جديدة</h3>
+        <div class="train-input-group">
+          <input type="text" id="gestureName" placeholder="اكتب اسم الإشارة (مثلاً: مرحباً)">
+          <button class="cv-btn cv-btn-secondary" id="trainBtn">بدء التدريب</button>
+        </div>
+        <p class="cv-note">* قم بعمل الإشارة أمام الكاميرا ثم اضغط "بدء التدريب". سيتم تسجيل 30 عينة تلقائياً.</p>
+
+        <h3 style="margin-top: 10px;">📚 الإشارات المدربة</h3>
+        <div id="trainedList" class="cv-trained-list">لا توجد إشارات مدربة بعد.</div>
+        <button class="cv-btn cv-btn-danger" id="clearAllBtn" style="margin-top: 10px; font-size: 12px;">مسح الكل</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="cv-warning">
+    <b>تنبيه:</b> هذه المحاكاة تعمل بالكامل داخل متصفحك ولا ترسل أي بيانات للخارج. تختلف عن القفاز الفعلي في أنها تعتمد على رؤية اليد بالكاميرا بدلاً من حساسات الانحناء، وهي أداة تعليمية لتجربة مفهوم التدريب والتعرف.
+  </div>
+</section>
+<!-- =================== نهاية قسم محاكاة الكاميرا =================== -->
+
+<section class="section quiz-section" id="quiz">
+  <div class="section-heading"><div><span class="section-kicker">05 / التقييم التفاعلي</span><h2>اختبر فهمك للمشروع</h2></div><p>أجب عن الأسئلة ثم اعرف نتيجتك مع شرح الإجابات.</p></div>
+  <div class="quiz-layout">
+    <div class="quiz-card">
+      <div class="quiz-progress"><span id="quizProgressText">السؤال 1 من 8</span><div><i id="quizProgressBar"></i></div></div>
+      <div id="quizContent"></div>
+      <div class="quiz-actions"><button class="btn outline" id="prevQuestion" disabled>السابق</button><button class="btn primary" id="nextQuestion">التالي</button></div>
+    </div>
+    <aside class="quiz-aside"><div class="quiz-big">?</div><h3>تحدي المعرفة</h3><p>الاختبار يقيس فهمك للمكونات وطريقة العمل والحدود الحالية للنموذج.</p><div class="quiz-meta"><span>8 أسئلة</span><span>اختيار من متعدد</span><span>نتيجة فورية</span></div></aside>
+  </div>
+  <div id="quizResult" class="quiz-result" hidden></div>
+</section>
+
+<section class="section roadmap-section" id="roadmap">
+  <div class="section-heading"><div><span class="section-kicker">06 / ما بعد النموذج الأولي</span><h2>خطة التطوير المستقبلية</h2></div><p>التطوير العلمي يبدأ بالبيانات والاختبار، ثم ينتقل تدريجيا إلى الذكاء الاصطناعي.</p></div>
+  <div class="roadmap">
+    <article><span>V1</span><h3>النموذج الأولي</h3><p>قراءة خمسة حساسات ومعايرة وتدريب قوالب ثابتة وعرض نص وصوت.</p><small>مرحلة النموذج الحالي</small></article>
+    <article><span>V2</span><h3>بيانات أكثر ودقة أعلى</h3><p>جمع عينات متعددة لكل إشارة ومن عدة مستخدمين وقياس الدقة والأخطاء.</p></article>
+    <article><span>V3</span><h3>التعرف على الحركة</h3><p>تحليل سلسلة زمنية من بيانات Flex وMPU6050 للتعرف على الإشارات الحركية.</p></article>
+    <article><span>V4</span><h3>تطبيق Android</h3><p>اتصال BLE أو Wi-Fi لعرض النصوص وتشغيل النطق وحفظ سجل الإشارات.</p></article>
+    <article><span>V5</span><h3>تعلم الآلة ومساعد ذكي</h3><p>تجربة KNN أو Random Forest ثم نموذج صغير على المتحكم عند ملاءمة البيانات والعتاد.</p></article>
+  </div>
+  <div class="ai-callout"><div class="ai-orb">✦</div><div><h3>كيف نضيف الذكاء الاصطناعي بشكل صحيح؟</h3><p>نجمع بيانات حقيقية بموافقة المشاركين، ونضع تسميات صحيحة بالتعاون مع مستخدمي لغة الإشارة المصرية، ثم ندرب ونختبر النموذج على بيانات منفصلة. المساعد اللغوي يأتي بعد التعرف الموثوق على الإشارة، ولا يخمن معنى قراءات الحساسات الخام.</p></div></div>
+</section>
+
+<section class="section resources-section" id="resources">
+  <div class="section-heading"><div><span class="section-kicker">07 / ملفات التنفيذ</span><h2>المشروع مفتوح للتطوير</h2></div><p>يمكنك مراجعة الكود والوثائق الهندسية وتحميلها من مستودع GitHub.</p></div>
+  <div class="resource-grid">
+    <a class="resource-card" href="firmware/MARO_Smart_Sign_Glove.ino"><span>⌘</span><b>الكود البرمجي</b><small>Arduino C++</small></a>
+    <a class="resource-card" href="hardware/قائمة_المكونات.md"><span>▦</span><b>قائمة المكونات</b><small>Hardware BOM</small></a>
+    <a class="resource-card" href="hardware/جدول_التوصيلات.md"><span>⌁</span><b>جدول التوصيلات</b><small>Pin Mapping</small></a>
+    <a class="resource-card" href="docs/01_دليل_التنفيذ.md"><span>☷</span><b>دليل التنفيذ</b><small>Step by step</small></a>
+    <a class="resource-card" href="docs/03_الذكاء_الاصطناعي_وخطة_التطوير.md"><span>✧</span><b>خطة الذكاء الاصطناعي</b><small>AI Roadmap</small></a>
+    <a class="resource-card" href="diagrams/مخطط_التوصيل.svg"><span>▧</span><b>مخطط التوصيل</b><small>SVG Diagram</small></a>
+  </div>
+</section>
+
+<section class="closing">
+  <img class="brand-logo"src="assets/images/student-leader.png"alt="MARO - قائد المشروع"width="200"height="200">
+  <p align="center">
+  <a href="#">
+  <img src="assets/images/separator.svg" alt="MARO Smart Sign Glove" width="100%" />
+</p>
+  <h2>التقنية جسر للتواصل</h2><p>MARO Smart Sign Glove<br>مشروع تعليمي وبحثي قابل للتطوير والاختبار</p>
+  <a href="#home">العودة إلى الأعلى ↑</a>
+</section>
+</main>
+<footer><span>© <span id="year"></span> MARO Smart Sign Glove</span><span>إعداد وتصميم : <strong style="color:#990000">الأسطورة</strong></span>
+    <span>© جميع الحقوق محفوظة</span></footer>
+
+<script src="assets/js/app.js" defer></script>
+<script src="assets/js/quiz.js" defer></script>
+<script type="module" src="assets/js/camera.js"></script>
+</body>
+</html>
