@@ -1,5 +1,3 @@
-<!-- =================== سكربت محاكاة الكاميرا (CV) =================== -->
-
 import { FilesetResolver, HandLandmarker, DrawingUtils } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.2.2/vision_bundle.mjs";
 
   const video = document.getElementById('webcam');
