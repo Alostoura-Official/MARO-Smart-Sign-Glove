@@ -1,29 +1,50 @@
-/* MARO Smart Sign Glove - offline application shell */
 const CACHE_PREFIX = "maro-smart-sign-glove";
-const CACHE_VERSION = "v4.0.0";
-const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
+const CACHE_VERSION = "v5.2.0";
+
+const SHELL_CACHE = `${CACHE_PREFIX}-shell-${CACHE_VERSION}`;
+const RUNTIME_CACHE = `${CACHE_PREFIX}-runtime-${CACHE_VERSION}`;
+
+/* =========================================================
+   Application Files
+   ========================================================= */
+
 const APP_SHELL = [
-  "./.nojekyll",
-  "./LICENSE",
-  "./README.md",
-  "./assets/css/pwa.css",
+  // Main pages
+  "./",
+  "./index.html",
+  "./offline.html",
+  "./manifest.webmanifest",
+
+  // CSS
   "./assets/css/style.css",
+  "./assets/css/pwa.css",
+
+  // JavaScript
+  "./assets/js/app.js",
+  "./assets/js/camera.js",
+  "./assets/js/pwa.js",
+  "./assets/js/quiz.js",
+
+  // Icons
+  "./assets/icons/apple-touch-icon.png",
+  "./assets/icons/favicon-32.png",
   "./assets/icons/icon-192.png",
   "./assets/icons/icon-512.png",
   "./assets/icons/icon-maskable-512.png",
-  "./assets/icons/apple-touch-icon.png",
-  "./assets/icons/favicon-32.png",
+  "./assets/icons/MARO-Smart.png",
+
+  // Images
   "./assets/images/glove-prototype.png",
   "./assets/images/glove-wiring.jpg",
   "./assets/images/sensor-layout.png",
   "./assets/images/separator.svg",
   "./assets/images/student-leader.png",
-  "./assets/js/app.js",
-  "./assets/js/camera.js",
-  "./assets/js/pwa.js",
-  "./assets/js/quiz.js",
-  "./diagrams/مخطط_آلية_العمل.svg",
+
+  // Diagrams
   "./diagrams/مخطط_التوصيل.svg",
+  "./diagrams/مخطط_آلية_العمل.svg",
+
+  // Documentation
   "./docs/00_المعاينة_البصرية.html",
   "./docs/01_دليل_التنفيذ.md",
   "./docs/02_إعداد_بيئة_البرمجة.md",
@@ -31,70 +52,291 @@ const APP_SHELL = [
   "./docs/04_سجل_الاختبار_والصيانة.md",
   "./docs/05_هيكل_المشروع.md",
   "./docs/06_دليل_التشغيل_دون_إنترنت.md",
+
+  // Firmware
   "./firmware/MARO_Smart_Sign_Glove.ino",
+
+  // Hardware
   "./hardware/جدول_التوصيلات.md",
   "./hardware/قائمة_المكونات.md",
-  "./index.html",
-  "./manifest.webmanifest",
+
+  // Media
   "./media/رسم_توزيع_الحساسات.png",
   "./media/صورة_الطالب_قائد_المشروع.png",
   "./media/نموذج_القفاز_المركب.png",
-  "./media/نموذج_القفاز_الموصلات_الفعلي.png"
+  "./media/نموذج_القفاز_الموصلات_الفعلي.png",
+
+  // Project information
+  "./README.md",
+  "./LICENSE"
 ];
-const OFFLINE_PAGE = "./offline.html";
 
-self.addEventListener("install", event => {
-  event.waitUntil((async () => {
-    const cache = await caches.open(CACHE_NAME);
-    await cache.addAll([...APP_SHELL, OFFLINE_PAGE]);
-    await self.skipWaiting();
-  })());
-});
+/* =========================================================
+   Helpers
+   ========================================================= */
 
-self.addEventListener("activate", event => {
-  event.waitUntil((async () => {
-    const keys = await caches.keys();
-    await Promise.all(keys.filter(key => key.startsWith(CACHE_PREFIX) && key !== CACHE_NAME).map(key => caches.delete(key)));
-    await self.clients.claim();
-  })());
-});
+function isSameOrigin(url) {
+  return url.origin === self.location.origin;
+}
 
-self.addEventListener("message", event => {
-  if (event.data && event.data.type === "SKIP_WAITING") self.skipWaiting();
-});
+function isHtmlRequest(request) {
+  return (
+    request.mode === "navigate" ||
+    request.headers.get("accept")?.includes("text/html")
+  );
+}
 
-self.addEventListener("fetch", event => {
-  const request = event.request;
-  if (request.method !== "GET") return;
-  const url = new URL(request.url);
-  if (url.origin !== self.location.origin) return;
+function isStaticAsset(url) {
+  return /\.(css|js|mjs|json|webmanifest|wasm)$/i.test(
+    url.pathname
+  );
+}
 
-  if (request.mode === "navigate") {
-    event.respondWith((async () => {
-      try {
-        const response = await fetch(request);
-        const cache = await caches.open(CACHE_NAME);
-        cache.put(request, response.clone());
-        return response;
-      } catch (_) {
-        return (await caches.match(request)) || (await caches.match("./index.html")) || (await caches.match(OFFLINE_PAGE));
-      }
-    })());
+function isImageOrFont(url) {
+  return /\.(png|jpg|jpeg|webp|svg|gif|ico|woff2?|ttf|otf)$/i.test(
+    url.pathname
+  );
+}
+
+async function saveResponse(cache, request, response) {
+  if (!response || !response.ok || response.type === "opaque") {
     return;
   }
 
-  event.respondWith((async () => {
-    const cached = await caches.match(request);
-    if (cached) return cached;
-    try {
-      const response = await fetch(request);
-      if (response && response.ok) {
-        const cache = await caches.open(CACHE_NAME);
-        cache.put(request, response.clone());
+  await cache.put(request, response.clone());
+}
+
+/* =========================================================
+   INSTALL
+   Cache application shell
+   ========================================================= */
+
+self.addEventListener("install", (event) => {
+  event.waitUntil(
+    (async () => {
+      const cache = await caches.open(SHELL_CACHE);
+
+      const results = await Promise.allSettled(
+        APP_SHELL.map(async (path) => {
+          const url = new URL(
+            path,
+            self.registration.scope
+          );
+
+          if (!isSameOrigin(url)) return;
+
+          const response = await fetch(url.href, {
+            cache: "reload"
+          });
+
+          if (!response.ok) {
+            throw new Error(
+              `Failed: ${path} (${response.status})`
+            );
+          }
+
+          await cache.put(url.href, response);
+        })
+      );
+
+      const failed = results.filter(
+        (result) => result.status === "rejected"
+      );
+
+      console.log(
+        `[MARO SW] Cached ${APP_SHELL.length - failed.length}/${APP_SHELL.length} files`
+      );
+
+      if (failed.length) {
+        console.warn(
+          "[MARO SW] Files not cached:",
+          failed
+        );
       }
-      return response;
-    } catch (_) {
-      return new Response("Offline - resource unavailable", { status: 503, statusText: "Offline" });
-    }
-  })());
+
+      await self.skipWaiting();
+    })()
+  );
 });
+
+/* =========================================================
+   ACTIVATE
+   Remove old caches
+   ========================================================= */
+
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    (async () => {
+      const keys = await caches.keys();
+
+      await Promise.all(
+        keys
+          .filter(
+            (key) =>
+              key.startsWith(`${CACHE_PREFIX}-`) &&
+              key !== SHELL_CACHE &&
+              key !== RUNTIME_CACHE
+          )
+          .map((key) => caches.delete(key))
+      );
+
+      await self.clients.claim();
+
+      console.log(
+        `[MARO SW] Active ${CACHE_VERSION}`
+      );
+    })()
+  );
+});
+
+/* =========================================================
+   NETWORK FIRST
+   HTML Pages
+   ========================================================= */
+
+async function networkFirst(request) {
+  const cache = await caches.open(RUNTIME_CACHE);
+
+  try {
+    const response = await fetch(request);
+
+    if (response.ok) {
+      await saveResponse(cache, request, response);
+    }
+
+    return response;
+
+  } catch (error) {
+    const cached = await caches.match(request);
+
+    if (cached) return cached;
+
+    const indexUrl = new URL(
+      "index.html",
+      self.registration.scope
+    );
+
+    const cachedIndex = await caches.match(indexUrl.href);
+
+    if (cachedIndex) return cachedIndex;
+
+    return new Response(
+      "MARO Smart Sign Glove - أنت غير متصل بالإنترنت",
+      {
+        status: 503,
+        headers: {
+          "Content-Type": "text/plain; charset=utf-8"
+        }
+      }
+    );
+  }
+}
+
+/* =========================================================
+   STALE WHILE REVALIDATE
+   CSS / JavaScript / JSON / WASM
+   ========================================================= */
+
+async function staleWhileRevalidate(request, event) {
+  const cache = await caches.open(RUNTIME_CACHE);
+  const cached = await caches.match(request);
+
+  const update = fetch(request)
+    .then(async (response) => {
+      await saveResponse(cache, request, response);
+      return response;
+    })
+    .catch(() => null);
+
+  event.waitUntil(update);
+
+  if (cached) return cached;
+
+  const response = await update;
+
+  return response || new Response(
+    "Resource unavailable offline",
+    {
+      status: 503,
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8"
+      }
+    }
+  );
+}
+
+/* =========================================================
+   CACHE FIRST
+   Images / Fonts / Icons
+   ========================================================= */
+
+async function cacheFirst(request) {
+  const cached = await caches.match(request);
+
+  if (cached) return cached;
+
+  const cache = await caches.open(RUNTIME_CACHE);
+
+  try {
+    const response = await fetch(request);
+
+    await saveResponse(cache, request, response);
+
+    return response;
+
+  } catch (error) {
+    return new Response("", {
+      status: 503,
+      statusText: "Resource unavailable offline"
+    });
+  }
+}
+
+/* =========================================================
+   FETCH HANDLER
+   ========================================================= */
+
+self.addEventListener("fetch", (event) => {
+  const request = event.request;
+
+  if (request.method !== "GET") return;
+
+  const url = new URL(request.url);
+
+  // Ignore external resources
+  if (!isSameOrigin(url)) return;
+
+  // HTML
+  if (isHtmlRequest(request)) {
+    event.respondWith(networkFirst(request));
+    return;
+  }
+
+  // CSS / JavaScript / JSON / WASM
+  if (isStaticAsset(url)) {
+    event.respondWith(
+      staleWhileRevalidate(request, event)
+    );
+    return;
+  }
+
+  // Images / Fonts / Icons
+  if (isImageOrFont(url)) {
+    event.respondWith(cacheFirst(request));
+    return;
+  }
+});
+
+/* =========================================================
+   MESSAGE HANDLER
+   ========================================================= */
+
+self.addEventListener("message", (event) => {
+  if (!event.data) return;
+
+  if (event.data.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
+});
+
+console.log("[MARO SW] Service Worker loaded");
