@@ -2,7 +2,7 @@
 ### A Voice for Every Sign
 
 <p align="center">
-  <img src="assets/icons/MARO-Smart.png" alt="MARO Smart Sign Glove Logo" width="180">
+  <img src="assets/images/student-leader.png" alt="MARO Smart Sign Glove Logo" width="180">
 </p>
 
 <p align="center">
