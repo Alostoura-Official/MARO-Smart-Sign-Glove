@@ -16,11 +16,28 @@ import { FilesetResolver, HandLandmarker, DrawingUtils } from "https://cdn.jsdel
 
   let handLandmarker = null;
   let lastVideoTime = -1;
-  let trainedGestures = [];
+  const STORAGE_KEY = 'maro-trained-gestures-v1';
+  let trainedGestures = loadTrainedGestures();
+  let editingGestureId = null;
   let isTrainingMode = false;
   let trainingSamples = [];
   let trainingName = '';
   let currentFingerAngles = [];
+
+
+  function loadTrainedGestures() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      return Array.isArray(saved) ? saved.filter(g => g && typeof g.name === 'string' && Array.isArray(g.angles) && g.angles.length === 5) : [];
+    } catch (_) { return []; }
+  }
+  trainedGestures.forEach(g => { if (!g.id) g.id = makeGestureId(); });
+  function persistGestures() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(trainedGestures)); }
+    catch (_) { statusBox.innerText = '⚠️ تعذر حفظ الإشارات في ذاكرة الجهاز'; }
+  }
+  function makeGestureId() { return 'g-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8); }
+  updateTrainedList();
 
   // --- إعدادات التعرف (State Machine) ---
   let currentRecognizedGesture = null;
@@ -150,6 +167,7 @@ import { FilesetResolver, HandLandmarker, DrawingUtils } from "https://cdn.jsdel
       isTrainingMode = false;
       trainingSamples = [];
       trainingName = '';
+      editingGestureId = null;
       trainBtn.innerText = 'بدء التدريب';
       trainBtn.classList.remove('cv-btn-danger');
       trainBtn.classList.add('cv-btn-secondary');
@@ -192,7 +210,14 @@ import { FilesetResolver, HandLandmarker, DrawingUtils } from "https://cdn.jsdel
     });
     for (let i = 0; i < 5; i++) avgAngles[i] /= trainingSamples.length;
 
-    trainedGestures.push({ name: trainingName, angles: avgAngles });
+    if (editingGestureId) {
+      const target = trainedGestures.find(g => g.id === editingGestureId);
+      if (target) { target.name = trainingName; target.angles = avgAngles; }
+      editingGestureId = null;
+    } else {
+      trainedGestures.push({ id: makeGestureId(), name: trainingName, angles: avgAngles });
+    }
+    persistGestures();
     updateTrainedList();
 
     isTrainingMode = false;
@@ -270,20 +295,76 @@ import { FilesetResolver, HandLandmarker, DrawingUtils } from "https://cdn.jsdel
   }
 
   function updateTrainedList() {
+    trainedList.replaceChildren();
     if (trainedGestures.length === 0) {
-      trainedList.innerText = 'لا توجد إشارات مدربة بعد.';
+      trainedList.textContent = 'لا توجد إشارات مدربة بعد.';
       return;
     }
-    trainedList.innerHTML = trainedGestures.map((g, i) =>
-      `<div class="cv-trained-row">
-        <span>${i+1}. ${g.name}</span>
-        <span class="ang">${g.angles.map(a=>a.toFixed(0)).join(' | ')}</span>
-      </div>`
-    ).join('');
+    trainedGestures.forEach((g, i) => {
+      const row = document.createElement('div');
+      row.className = 'cv-trained-row';
+      const info = document.createElement('div');
+      info.className = 'cv-trained-info';
+      const name = document.createElement('strong');
+      name.textContent = `${i + 1}. ${g.name}`;
+      const angles = document.createElement('small');
+      angles.className = 'ang';
+      angles.textContent = g.angles.map(a => Number(a).toFixed(0)).join(' | ');
+      info.append(name, angles);
+      const actions = document.createElement('div');
+      actions.className = 'cv-gesture-actions';
+      const edit = document.createElement('button');
+      edit.type = 'button'; edit.className = 'cv-gesture-edit'; edit.textContent = 'تعديل';
+      edit.dataset.action = 'edit'; edit.dataset.id = g.id;
+      const remove = document.createElement('button');
+      remove.type = 'button'; remove.className = 'cv-gesture-delete'; remove.textContent = 'حذف';
+      remove.dataset.action = 'delete'; remove.dataset.id = g.id;
+      actions.append(edit, remove);
+      row.append(info, actions);
+      trainedList.append(row);
+    });
   }
 
+  function editGesture(id) {
+    const gesture = trainedGestures.find(g => g.id === id);
+    if (!gesture) return;
+    const name = prompt('اكتب الاسم الجديد أو اتركه كما هو ثم اضغط موافق لإعادة تسجيل الإشارة', gesture.name);
+    if (name === null) return;
+    const cleanName = name.trim();
+    if (!cleanName) { alert('اسم الإشارة لا يمكن أن يكون فارغا'); return; }
+    if (currentFingerAngles.length === 0) { alert('شغل الكاميرا واجعل اليد ظاهرة أولا لإعادة تسجيل الإشارة'); return; }
+    trainingName = cleanName;
+    editingGestureId = id;
+    trainingSamples = [];
+    isTrainingMode = true;
+    trainBtn.innerText = 'إلغاء التعديل';
+    trainBtn.classList.remove('cv-btn-secondary');
+    trainBtn.classList.add('cv-btn-danger');
+    trainingPanel.classList.add('training-active');
+    statusBox.innerText = '📸 أعد تشكيل الإشارة لتسجيل 30 عينة وتحديثها';
+  }
+
+  function deleteGesture(id) {
+    const gesture = trainedGestures.find(g => g.id === id);
+    if (!gesture || !confirm(`هل تريد حذف إشارة "${gesture.name}"؟`)) return;
+    trainedGestures = trainedGestures.filter(g => g.id !== id);
+    persistGestures(); updateTrainedList();
+    if (currentRecognizedGesture === gesture.name) resetRecognitionState();
+    statusBox.innerText = 'تم حذف الإشارة';
+  }
+
+  trainedList.addEventListener('click', event => {
+    const button = event.target.closest('button[data-action]');
+    if (!button) return;
+    if (button.dataset.action === 'edit') editGesture(button.dataset.id);
+    if (button.dataset.action === 'delete') deleteGesture(button.dataset.id);
+  });
+
   function clearAll() {
+    if (trainedGestures.length && !confirm('هل تريد مسح جميع الإشارات المدربة نهائيا من هذا الجهاز؟')) return;
     trainedGestures = [];
+    editingGestureId = null;
+    persistGestures();
     updateTrainedList();
     resetRecognitionState();
     lastSpokenGesture = null;
