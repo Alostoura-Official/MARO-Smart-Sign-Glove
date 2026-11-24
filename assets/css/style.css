@@ -1740,3 +1740,12 @@ footer {
         grid-template-columns: 1fr;
     }
 }
+
+/* Trained gesture management controls */
+.cv-trained-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.cv-trained-info{display:flex;flex-direction:column;gap:4px;min-width:0}
+.cv-gesture-actions{display:flex;gap:7px;flex-wrap:wrap}
+.cv-gesture-actions button{border:1px solid #42617a;border-radius:8px;padding:6px 12px;font:inherit;font-size:12px;cursor:pointer;color:#fff;background:#173d5c}
+.cv-gesture-actions .cv-gesture-delete{background:#762f3b;border-color:#a64b58}
+.cv-gesture-actions .cv-gesture-edit{background:#17536a;border-color:#2586a1}
+.cv-gesture-actions button:focus-visible{outline:2px solid #31d6e8;outline-offset:2px}
