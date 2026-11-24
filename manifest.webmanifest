@@ -1,0 +1,39 @@
+{
+  "id": "./",
+  "name": "MARO Smart Sign Glove",
+  "short_name": "MARO Glove",
+  "description": "مشروع القفاز الذكي MARO لتحويل مجموعة من إشارات اليد المدربة إلى نص وصوت",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#071629",
+  "theme_color": "#071629",
+  "categories": [
+    "education",
+    "utilities",
+    "accessibility"
+  ],
+  "icons": [
+    {
+      "src": "assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
