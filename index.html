@@ -6,14 +6,22 @@
   <meta name="theme-color" content="#071629">
   <meta name="description" content="MARO Smart Sign Glove — قفاز ذكي تجريبي يعتمد على ESP32 وحساسات الانحناء والحركة لمساعدة المستخدم على تحويل مجموعة من الإشارات المدربة إلى نص وصوت.">
   <title>MARO Smart Sign Glove | القفاز الذكي</title>
-  <link rel="icon" href="assets/images/student-leader.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
   <link rel="stylesheet" href="assets/css/style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.webmanifest">
+  
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="MARO Glove">
+  <link rel="stylesheet" href="assets/css/pwa.css">
+  <link href="" rel="stylesheet">
 
 </head>
 <body>
 
 <header class="site-header">
+  <div class="pwa-status" id="pwaStatus" role="status" aria-label="حالة الاتصال" title="حالة الاتصال"><span class="pwa-dot" id="pwaStatusDot"></span><span class="sr-only" id="pwaStatusText">جاري فحص حالة الاتصال</span></div>
   <a class="brand" href="#home" aria-label="MARO Smart Sign Glove - الصفحة الرئيسية" >
     <img class="brand-logo"src="assets/images/student-leader.png"alt="MARO - قائد المشروع"width="42"height="42">
     <span><b>MARO</b><small>SMART SIGN GLOVE</small>
@@ -236,7 +244,9 @@
 </main>
 <footer><span>© <span id="year"></span> MARO Smart Sign Glove</span><span>إعداد وتصميم : <strong style="color:#990000">الأسطورة</strong></span>
     <span>© جميع الحقوق محفوظة</span></footer>
+<div class="pwa-actions" id="pwaActions"><button type="button" id="installAppBtn" hidden>تثبيت التطبيق</button><button type="button" id="updateAppBtn" hidden>تحديث التطبيق</button></div>
 
+<script src="assets/js/pwa.js" defer></script>
 <script src="assets/js/app.js" defer></script>
 <script src="assets/js/quiz.js" defer></script>
 <script type="module" src="assets/js/camera.js"></script>
