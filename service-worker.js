@@ -1,6 +1,6 @@
 /* MARO Smart Sign Glove - offline application shell */
 const CACHE_PREFIX = "maro-smart-sign-glove";
-const CACHE_VERSION = "v3.0.0";
+const CACHE_VERSION = "v4.0.0";
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 const APP_SHELL = [
   "./.nojekyll",
