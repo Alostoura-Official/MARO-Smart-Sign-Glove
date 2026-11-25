@@ -101,3 +101,187 @@ function showResult(){
 }
 renderQuestion();
 
+/* ================================================================
+   33) 📲 نظام تثبيت التطبيق PWA
+   ================================================================ */
+(function () {
+  'use strict';
+
+  const isStandalone =
+    window.matchMedia('(display-mode: standalone)').matches ||
+    window.matchMedia('(display-mode: fullscreen)').matches ||
+    window.matchMedia('(display-mode: minimal-ui)').matches ||
+    window.navigator.standalone === true ||
+    document.referrer.includes('android-app://');
+
+  const installedFlag = localStorage.getItem('app-installed') === 'true';
+
+  if (isStandalone || installedFlag) {
+    console.log('✅ التطبيق مثبت - لن يظهر بانر التثبيت');
+    const b = document.getElementById('installBanner');
+    const h = document.getElementById('installHeaderBtn');
+    if (b) b.style.display = 'none';
+    if (h) h.style.display = 'none';
+    return;
+  }
+
+  console.log('⚠️ التطبيق غير مثبت - سيعرض البانر عند الإمكان');
+
+  let deferredPrompt = null;
+  const banner = document.getElementById('installBanner');
+  const installBtn = document.getElementById('installBtn');
+  const closeBtn = document.getElementById('installClose');
+  const headerBtn = document.getElementById('installHeaderBtn');
+  const iosModal = document.getElementById('iosModal');
+  const installOverlay = document.getElementById('installOverlay');
+
+  if (!banner) return;
+
+  const ua = navigator.userAgent;
+  const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+  const isAndroid = /Android/.test(ua);
+  const isDesktop = !isIOS && !isAndroid;
+
+  const dismissedTime = localStorage.getItem('install-dismissed');
+  if (dismissedTime) {
+    const daysSince = (Date.now() - +dismissedTime) / (1000 * 60 * 60 * 24);
+    if (daysSince < 7) {
+      console.log('⏸️ المستخدم رفض التثبيت قبل ' + Math.round(daysSince) + ' أيام');
+      return;
+    }
+  }
+
+  function showBanner() {
+    if (localStorage.getItem('app-installed') === 'true') return;
+    if (window.matchMedia('(display-mode: standalone)').matches) return;
+    if (banner) {
+      banner.style.display = 'flex';
+      const views = +(localStorage.getItem('install-banner-views') || 0);
+      localStorage.setItem('install-banner-views', (views + 1).toString());
+    }
+  }
+
+  function hideBanner(permanent = false) {
+    if (banner) banner.style.display = 'none';
+    if (permanent) localStorage.setItem('install-dismissed', Date.now().toString());
+  }
+
+  function showHeaderBtn() {
+    if (localStorage.getItem('app-installed') === 'true') return;
+    if (window.matchMedia('(display-mode: standalone)').matches) return;
+    if (headerBtn) headerBtn.style.display = 'inline-block';
+  }
+
+  window.openInstallModal = function () {
+    if (localStorage.getItem('app-installed') === 'true' ||
+        window.matchMedia('(display-mode: standalone)').matches) {
+      alert('✅ التطبيق مثبت بالفعل على جهازك');
+      return;
+    }
+    if (isIOS) {
+      if (iosModal) iosModal.style.display = 'block';
+      if (installOverlay) installOverlay.style.display = 'block';
+      document.body.style.overflow = 'hidden';
+    } else if (deferredPrompt) {
+      showBanner();
+    } else {
+      alert(
+        '💡 لإضافة التطبيق:\n\n' +
+        (isDesktop
+          ? '• Chrome: اضغط ⊕ في شريط العنوان\n• أو: القائمة ⋮ → تثبيت'
+          : '• Chrome: القائمة ⋮ → "تثبيت التطبيق"')
+      );
+    }
+  };
+
+  window.closeIosModal = function () {
+    if (iosModal) iosModal.style.display = 'none';
+    if (installOverlay) installOverlay.style.display = 'none';
+    document.body.style.overflow = '';
+  };
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    console.log('📲 التطبيق قابل للتثبيت');
+    showHeaderBtn();
+    setTimeout(() => { if (window.scrollY < 300) showBanner(); }, 3000);
+  });
+
+  if (isIOS) {
+    showHeaderBtn();
+    if (banner) {
+      const bannerSubtitle = banner.querySelector('.install-text span');
+      if (bannerSubtitle) bannerSubtitle.textContent = 'اضغط على زر المشاركة ⬆️ ثم "إضافة للشاشة"';
+    }
+    setTimeout(() => { if (window.scrollY < 300) showBanner(); }, 5000);
+  }
+
+  if (installBtn) {
+    installBtn.addEventListener('click', async () => {
+      if (isIOS) { window.openInstallModal(); return; }
+      if (!deferredPrompt) { window.openInstallModal(); return; }
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        console.log('✅ المستخدم وافق على التثبيت');
+        localStorage.setItem('app-installed', 'true');
+        localStorage.setItem('app-installed-date', Date.now().toString());
+        hideBanner();
+        if (headerBtn) headerBtn.style.display = 'none';
+      } else {
+        console.log('❌ المستخدم رفض التثبيت');
+        hideBanner(true);
+      }
+      deferredPrompt = null;
+    });
+  }
+
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => { hideBanner(true); });
+  }
+
+  window.addEventListener('appinstalled', () => {
+    console.log('🎉 التطبيق اتثبت بنجاح');
+    localStorage.setItem('app-installed', 'true');
+    localStorage.setItem('app-installed-date', Date.now().toString());
+    localStorage.removeItem('install-dismissed');
+    hideBanner();
+    if (headerBtn) headerBtn.style.display = 'none';
+    deferredPrompt = null;
+    setTimeout(() => {
+      const toast = document.createElement('div');
+      toast.textContent = '🎉 تم تثبيت التطبيق بنجاح!';
+      toast.style.cssText = `
+        position: fixed; bottom: 30px; left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+        color: #fff; padding: 14px 24px; border-radius: 14px;
+        font-family: 'Tajawal', sans-serif; font-weight: 700; font-size: 15px;
+        box-shadow: 0 8px 24px rgba(34, 197, 94, 0.4);
+        z-index: 100002; animation: slideUp 0.5s ease;
+      `;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 4000);
+    }, 500);
+  });
+
+  let scrollTriggered = false;
+  window.addEventListener('scroll', () => {
+    if (localStorage.getItem('app-installed') === 'true') return;
+    if (window.matchMedia('(display-mode: standalone)').matches) return;
+    if (scrollTriggered) return;
+    if (window.scrollY > 500) {
+      scrollTriggered = true;
+      if (!localStorage.getItem('install-dismissed')) showBanner();
+    }
+  }, { passive: true });
+
+  setInterval(() => {
+    if (localStorage.getItem('app-installed') === 'true' ||
+        window.matchMedia('(display-mode: standalone)').matches) {
+      if (banner && banner.style.display !== 'none') banner.style.display = 'none';
+      if (headerBtn && headerBtn.style.display !== 'none') headerBtn.style.display = 'none';
+    }
+  }, 30000);
+})();
