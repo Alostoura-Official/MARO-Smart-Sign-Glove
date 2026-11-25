@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "maro-smart-sign-glove";
-const CACHE_VERSION = "v5.2.0";
+const CACHE_VERSION = "MARO-V1.0.0";
 
 const SHELL_CACHE = `${CACHE_PREFIX}-shell-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `${CACHE_PREFIX}-runtime-${CACHE_VERSION}`;
@@ -199,36 +199,30 @@ async function networkFirst(request) {
 
   try {
     const response = await fetch(request);
-
     if (response.ok) {
       await saveResponse(cache, request, response);
     }
-
     return response;
-
   } catch (error) {
+    // 1. لو الصفحة موجودة في الكاش
     const cached = await caches.match(request);
-
     if (cached) return cached;
 
-    const indexUrl = new URL(
-      "index.html",
-      self.registration.scope
-    );
+    // 2. لو مفيش، نجيب صفحة الأوفلاين
+    const offlineUrl = new URL("offline.html", self.registration.scope);
+    const cachedOffline = await caches.match(offlineUrl.href);
+    if (cachedOffline) return cachedOffline;
 
+    // 3. لو صفحة الأوفلاين نفسها مش موجودة، نجيب الـ index
+    const indexUrl = new URL("index.html", self.registration.scope);
     const cachedIndex = await caches.match(indexUrl.href);
-
     if (cachedIndex) return cachedIndex;
 
-    return new Response(
-      "MARO Smart Sign Glove - أنت غير متصل بالإنترنت",
-      {
-        status: 503,
-        headers: {
-          "Content-Type": "text/plain; charset=utf-8"
-        }
-      }
-    );
+    // 4. لو مفيش أي حاجة خالص، نرجع نص عادي
+    return new Response("أنت غير متصل بالإنترنت", {
+      status: 503,
+      headers: { "Content-Type": "text/plain; charset=utf-8" }
+    });
   }
 }
 
