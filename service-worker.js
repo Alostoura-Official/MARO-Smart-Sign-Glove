@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "maro-smart-sign-glove";
-const CACHE_VERSION = "MARO-V1.0.0";
+const CACHE_VERSION = "MARO-V1.0.1"; 
 
 const SHELL_CACHE = `${CACHE_PREFIX}-shell-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `${CACHE_PREFIX}-runtime-${CACHE_VERSION}`;
@@ -79,6 +79,15 @@ function isSameOrigin(url) {
   return url.origin === self.location.origin;
 }
 
+function isAllowedExternal(url) {
+  return (
+    url.hostname.includes("mediapipe") ||
+    url.hostname.includes("cdn.jsdelivr.net") ||
+    url.hostname.includes("storage.googleapis.com") ||
+    url.hostname.includes("tfhub.dev")
+  );
+}
+
 function isHtmlRequest(request) {
   return (
     request.mode === "navigate" ||
@@ -93,17 +102,20 @@ function isStaticAsset(url) {
 }
 
 function isImageOrFont(url) {
-  return /\.(png|jpg|jpeg|webp|svg|gif|ico|woff2?|ttf|otf)$/i.test(
+  return /\.(png|jpg|jpeg|webp|svg|gif|ico|woff2?|ttf|otf|wasm|tflite|data|binarypb|pak)$/i.test(
     url.pathname
   );
 }
 
 async function saveResponse(cache, request, response) {
-  if (!response || !response.ok || response.type === "opaque") {
-    return;
-  }
+  if (!response) return;
+  if (!response.ok && response.type !== "opaque") return;
 
-  await cache.put(request, response.clone());
+  try {
+    await cache.put(request, response.clone());
+  } catch (err) {
+    console.warn("[MARO SW] Failed to cache:", request.url, err);
+  }
 }
 
 /* =========================================================
@@ -261,7 +273,7 @@ async function staleWhileRevalidate(request, event) {
 
 /* =========================================================
    CACHE FIRST
-   Images / Fonts / Icons
+   Images / Fonts / Icons / Camera Models
    ========================================================= */
 
 async function cacheFirst(request) {
@@ -297,12 +309,16 @@ self.addEventListener("fetch", (event) => {
 
   const url = new URL(request.url);
 
-  // Ignore external resources
-  if (!isSameOrigin(url)) return;
+  if (!isSameOrigin(url) && !isAllowedExternal(url)) return;
 
   // HTML
   if (isHtmlRequest(request)) {
     event.respondWith(networkFirst(request));
+    return;
+  }
+
+  if (isAllowedExternal(url)) {
+    event.respondWith(cacheFirst(request));
     return;
   }
 
@@ -314,7 +330,7 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Images / Fonts / Icons
+  // Images / Fonts / Icons / Camera Models
   if (isImageOrFont(url)) {
     event.respondWith(cacheFirst(request));
     return;
