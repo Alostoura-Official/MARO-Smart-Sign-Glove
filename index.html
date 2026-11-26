@@ -165,6 +165,7 @@
     </div>
 
     <div class="cv-panels">
+      <!-- البانل الأول: مخرجات النظام -->
       <div class="panel">
         <h3>🖥️ مخرجات النظام</h3>
         <div class="oled-screen">
@@ -172,14 +173,18 @@
           <div class="oled-sub" id="oledSub">No gesture detected</div>
         </div>
         <div class="status-box" id="statusBox">⚡ جاهز للتعرف...</div>
-      <div class="voice-selector">
-  <label for="voiceGender">🔊 نوع الصوت:</label>
-  <select id="voiceGender">
-    <option value="female">أنثى 👩</option>
-    <option value="male">ذكر 👨</option>
-  </select>
-</div>
 
+        <!-- اختيار نوع الصوت -->
+        <div class="voice-selector">
+          <label for="voiceGender">🔊 نوع الصوت:</label>
+          <select id="voiceGender">
+            <option value="female">أنثى 👩</option>
+            <option value="male">ذكر 👨</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- البانل الثاني: تدريب الإشارات -->
       <div class="panel" id="trainingPanel">
         <h3>🧠 تدريب إشارة جديدة</h3>
         <div class="train-input-group">
