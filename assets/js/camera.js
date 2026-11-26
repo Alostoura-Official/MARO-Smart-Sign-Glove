@@ -372,47 +372,63 @@ import { FilesetResolver, HandLandmarker, DrawingUtils } from "https://cdn.jsdel
     statusBox.innerText = '⚡ تم مسح الإشارات';
   }
 
-  function speak(text) {
-    if (!('speechSynthesis' in window)) return;
+  // دالة تشغيل الصوت - تدعم اختيار ذكر/أنثى
+function speak(text) {
+  if (!('speechSynthesis' in window)) return;
 
-    // دالة داخلية لتشغيل الكلام بعد اختيار الصوت المناسب
-    const doSpeak = () => {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'ar-SA';
+  const genderSelector = document.getElementById('voiceGender');
+  const gender = genderSelector ? genderSelector.value : 'female';
+
+  const doSpeak = () => {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'ar-SA';
+
+    if (gender === 'female') {
+      utterance.pitch = 1.4;
       utterance.rate = 1.0;
-      utterance.pitch = 1.4; // 👈 رفع النبرة لجعل الصوت أنثوي
 
-      // محاولة اختيار صوت عربي أنثوي من الأصوات المتاحة
       const voices = speechSynthesis.getVoices();
-      const femaleVoice = voices.find(v => 
+      const femaleVoice = voices.find(v =>
         v.lang.startsWith('ar') && (
           v.name.toLowerCase().includes('female') ||
           v.name.includes('Hoda') ||
           v.name.includes('Salma') ||
           v.name.includes('Zeina') ||
           v.name.includes('Laila') ||
-          v.name.includes('Mariam') ||
-          v.name.includes('Sana')
+          v.name.includes('Mariam')
         )
       );
+      if (femaleVoice) utterance.voice = femaleVoice;
 
-      if (femaleVoice) {
-        utterance.voice = femaleVoice;
-      }
-
-      window.speechSynthesis.speak(utterance);
-    };
-
-    // في بعض المتصفحات، الأصوات بتتحمل بشكل غير متزامن
-    if (speechSynthesis.getVoices().length === 0) {
-      speechSynthesis.onvoiceschanged = () => {
-        speechSynthesis.onvoiceschanged = null;
-        doSpeak();
-      };
     } else {
-      doSpeak();
+      utterance.pitch = 0.7;
+      utterance.rate = 1.0;
+
+      const voices = speechSynthesis.getVoices();
+      const maleVoice = voices.find(v =>
+        v.lang.startsWith('ar') && (
+          v.name.toLowerCase().includes('male') ||
+          v.name.includes('Maged') ||
+          v.name.includes('Naayf') ||
+          v.name.includes('Tarik') ||
+          v.name.includes('Hamza')
+        )
+      );
+      if (maleVoice) utterance.voice = maleVoice;
     }
+
+    window.speechSynthesis.speak(utterance);
+  };
+
+  if (speechSynthesis.getVoices().length === 0) {
+    speechSynthesis.onvoiceschanged = () => {
+      speechSynthesis.onvoiceschanged = null;
+      doSpeak();
+    };
+  } else {
+    doSpeak();
   }
+}
 
   // ربط الأحداث (بدل onclick inline)
   startCameraBtn.addEventListener('click', startCamera);
