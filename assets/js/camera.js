@@ -373,12 +373,44 @@ import { FilesetResolver, HandLandmarker, DrawingUtils } from "https://cdn.jsdel
   }
 
   function speak(text) {
-    if ('speechSynthesis' in window) {
+    if (!('speechSynthesis' in window)) return;
+
+    // دالة داخلية لتشغيل الكلام بعد اختيار الصوت المناسب
+    const doSpeak = () => {
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'ar-SA';
       utterance.rate = 1.0;
-      utterance.pitch = 1.0;
+      utterance.pitch = 1.4; // 👈 رفع النبرة لجعل الصوت أنثوي
+
+      // محاولة اختيار صوت عربي أنثوي من الأصوات المتاحة
+      const voices = speechSynthesis.getVoices();
+      const femaleVoice = voices.find(v => 
+        v.lang.startsWith('ar') && (
+          v.name.toLowerCase().includes('female') ||
+          v.name.includes('Hoda') ||
+          v.name.includes('Salma') ||
+          v.name.includes('Zeina') ||
+          v.name.includes('Laila') ||
+          v.name.includes('Mariam') ||
+          v.name.includes('Sana')
+        )
+      );
+
+      if (femaleVoice) {
+        utterance.voice = femaleVoice;
+      }
+
       window.speechSynthesis.speak(utterance);
+    };
+
+    // في بعض المتصفحات، الأصوات بتتحمل بشكل غير متزامن
+    if (speechSynthesis.getVoices().length === 0) {
+      speechSynthesis.onvoiceschanged = () => {
+        speechSynthesis.onvoiceschanged = null;
+        doSpeak();
+      };
+    } else {
+      doSpeak();
     }
   }
 
