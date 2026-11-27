@@ -1,10 +1,13 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0c2342">
-<title>معاينة القفاز الذكي - MARO</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071629">
+  <meta name="description" content="MARO Smart Sign Glove — قفاز ذكي تجريبي يعتمد على ESP32 وحساسات الانحناء والحركة لمساعدة المستخدم على تحويل مجموعة من الإشارات المدربة إلى نص وصوت.">
+  <title>معاينة القفاز الذكي - MARO</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/icons/favicon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/icons/apple-touch-icon.png">
 
 <style>
 /* ============ المتغيرات العامة ============ */
@@ -101,88 +104,6 @@ body {
   gap: 6px;
 }
 
-/* ============ القائمة الجانبية ============ */
-.sidebar {
-  position: fixed;
-  top: 0;
-  right: -320px;
-  width: 300px;
-  height: 100vh;
-  background: var(--card-bg);
-  border-left: 1px solid var(--border);
-  padding: 25px 20px;
-  z-index: 200;
-  overflow-y: auto;
-  transition: right 0.35s cubic-bezier(0.4,0,0.2,1);
-  box-shadow: -10px 0 30px rgba(0,0,0,.2);
-}
-
-.sidebar.open { right: 0; }
-
-.sidebar h3 {
-  margin: 0 0 15px;
-  color: var(--accent);
-  font-size: 18px;
-  border-bottom: 2px solid var(--accent);
-  padding-bottom: 10px;
-}
-
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 20px;
-}
-
-.sidebar li {
-  margin: 5px 0;
-}
-
-.sidebar a {
-  display: block;
-  padding: 10px 14px;
-  color: var(--text);
-  text-decoration: none;
-  border-radius: 10px;
-  font-size: 14px;
-  transition: var(--transition);
-  border-right: 3px solid transparent;
-}
-
-.sidebar a:hover {
-  background: var(--bg);
-  border-right-color: var(--accent);
-  padding-right: 18px;
-}
-
-.sidebar-close {
-  position: absolute;
-  top: 15px;
-  left: 15px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  color: var(--text);
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  cursor: pointer;
-  font-size: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.6);
-  z-index: 150;
-  display: none;
-  animation: fadeIn .3s;
-}
-
-.overlay.show { display: block; }
-
-@keyframes fadeIn { from{opacity:0} to{opacity:1} }
 
 /* ============ المحتوى الرئيسي ============ */
 .wrap {
@@ -384,43 +305,9 @@ body {
     <button class="topbar-btn" onclick="window.print()" title="طباعة">
       🖨️
     </button>
-    <button class="topbar-btn" onclick="toggleSidebar()" title="القائمة">
-      ☰
-    </button>
   </div>
 </header>
 
-<!-- ============ القائمة الجانبية ============ -->
-<aside class="sidebar" id="sidebar">
-  <button class="sidebar-close" onclick="toggleSidebar()">✕</button>
-  <h3>📑 المحتويات</h3>
-  <ul>
-    <li><a href="#hero-section">🏠 الرئيسية</a></li>
-    <li><a href="#cards-section">🖼️ الصور والمخططات</a></li>
-    <li><a href="#note-section">📌 الملاحظة العلمية</a></li>
-  </ul>
-
-  <h3>📚 ملفات المشروع</h3>
-  <ul>
-    <li><a href="01_دليل_التنفيذ.md">📖 دليل التنفيذ</a></li>
-    <li><a href="02_إعداد_بيئة_البرمجة.md">⚙️ إعداد البيئة</a></li>
-    <li><a href="03_الذكاء_الاصطناعي_وخطة_التطوير.md">🧠 خطة الذكاء الاصطناعي</a></li>
-    <li><a href="04_سجل_الاختبار_والصيانة.md">🔧 سجل الاختبار</a></li>
-    <li><a href="05_هيكل_المشروع.md">🗂️ هيكل المشروع</a></li>
-    <li><a href="06_دليل_التشغيل_دون_إنترنت.md">📴 التشغيل دون إنترنت</a></li>
-  </ul>
-
-  <h3>🔗 روابط سريعة</h3>
-  <ul>
-    <li><a href="../index.html">🏠 الصفحة الرئيسية</a></li>
-    <li><a href="../hardware/قائمة_المكونات.md">🔩 قائمة المكونات</a></li>
-    <li><a href="../hardware/جدول_التوصيلات.md">🔌 جدول التوصيلات</a></li>
-    <li><a href="../firmware/MARO_Smart_Sign_Glove.ino">⌘ الكود البرمجي</a></li>
-  </ul>
-</aside>
-
-<!-- ============ Overlay ============ -->
-<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
 <!-- ============ المحتوى ============ -->
 <div class="wrap">
@@ -481,21 +368,16 @@ function toggleTheme() {
   const current = html.getAttribute('data-theme');
   const next = current === 'dark' ? 'light' : 'dark';
   html.setAttribute('data-theme', next);
-  localStorage.setItem('maro-preview-theme', next);
+  try { localStorage.setItem('maro-preview-theme', next); } catch (e) {}
 }
-// استرجاع الوضع المحفوظ
-(function() {
-  const saved = localStorage.getItem('maro-preview-theme');
-  if (saved) document.documentElement.setAttribute('data-theme', saved);
-})();
 
-/* ============ القائمة الجانبية ============ */
-function toggleSidebar() {
-  const sidebar = document.getElementById('sidebar');
-  const overlay = document.getElementById('overlay');
-  sidebar.classList.toggle('open');
-  overlay.classList.toggle('show');
-}
+/* استرجاع الوضع المحفوظ */
+(function () {
+  try {
+    const saved = localStorage.getItem('maro-preview-theme');
+    if (saved) document.documentElement.setAttribute('data-theme', saved);
+  } catch (e) {}
+})();
 
 /* ============ Lightbox ============ */
 function openLightbox(src, type) {
@@ -503,25 +385,25 @@ function openLightbox(src, type) {
   const content = document.getElementById('lightboxContent');
 
   if (type === 'svg') {
-    content.innerHTML = `<object data="${src}" type="image/svg+xml" style="width:90vw;height:85vh;"></object>`;
+    content.innerHTML = '<object data="' + src + '" type="image/svg+xml" style="width:90vw;height:85vh;"></object>';
   } else {
-    content.innerHTML = `<img src="${src}" alt="معاينة">`;
+    content.innerHTML = '<img src="' + src + '" alt="معاينة">';
   }
   lb.classList.add('show');
 }
 
 function closeLightbox(e, force) {
-  if (!force && e && e.target !== e.currentTarget && e.target.tagName !== 'OBJECT' && e.target.tagName !== 'IMG') return;
+  // يُغلق فقط عند: زر الإغلاق (force) أو النقر على الخلفية نفسها
+  if (!force && e && e.target !== e.currentTarget) return;
   document.getElementById('lightbox').classList.remove('show');
   document.getElementById('lightboxContent').innerHTML = '';
 }
 
-/* إغلاق بالـ Escape */
-document.addEventListener('keydown', e => {
+/* إغلاق بمفتاح Escape */
+document.addEventListener('keydown', function (e) {
   if (e.key === 'Escape') {
-    closeLightbox(null, true);
-    const sidebar = document.getElementById('sidebar');
-    if (sidebar.classList.contains('open')) toggleSidebar();
+    document.getElementById('lightbox').classList.remove('show');
+    document.getElementById('lightboxContent').innerHTML = '';
   }
 });
 </script>
