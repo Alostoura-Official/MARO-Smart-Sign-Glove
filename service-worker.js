@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "maro-smart-sign-glove";
-const CACHE_VERSION = "MARO-V1.1.0"; 
+const CACHE_VERSION = "MARO-V1.1.1"; 
 
 const SHELL_CACHE = `${CACHE_PREFIX}-shell-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `${CACHE_PREFIX}-runtime-${CACHE_VERSION}`;
