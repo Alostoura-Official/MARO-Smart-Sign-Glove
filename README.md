@@ -157,6 +157,9 @@ Supported Sign Recognition
 │   │   ├── 🖼️ glove-wiring.jpg
 │   │   ├── 🖼️ sensor-layout.png
 │   │   ├── 🖼️ separator.svg
+│   │   ├── 🖼️ SmartSignPic1.jpg
+│   │   ├── 🖼️ SmartSignPic2.jpg
+│   │   ├── 🖼️ SmartSignPic3.jpg
 │   │   └── 🖼️ student-leader.png
 │   └── 📂 js
 │       ├── ⚙️ app.js
