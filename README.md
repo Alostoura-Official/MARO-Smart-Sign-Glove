@@ -178,6 +178,7 @@ Supported Sign Recognition
 │   ├── 📖 05_هيكل_المشروع.md
 │   └── 📖 06_دليل_التشغيل_دون_إنترنت.md
 ├── 📂 firmware
+│   ├── 📄 MARO_Smart_Sign_Glove.obj
 │   └── 📄 MARO_Smart_Sign_Glove.ino
 ├── 📂 hardware
 │   ├── 📖 جدول_التوصيلات.md
