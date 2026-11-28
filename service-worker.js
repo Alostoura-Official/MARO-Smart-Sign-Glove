@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "maro-smart-sign-glove";
-const CACHE_VERSION = "MARO-V1.0.9"; 
+const CACHE_VERSION = "MARO-V1.1.0"; 
 
 const SHELL_CACHE = `${CACHE_PREFIX}-shell-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `${CACHE_PREFIX}-runtime-${CACHE_VERSION}`;
@@ -39,6 +39,9 @@ const APP_SHELL = [
   "./assets/images/sensor-layout.png",
   "./assets/images/separator.svg",
   "./assets/images/student-leader.png",
+  "./assets/images/SmartSignPic1.jpg",
+  "./assets/images/SmartSignPic2.jpg",
+  "./assets/images/SmartSignPic3.jpg",
 
   // Diagrams
   "./diagrams/مخطط_التوصيل.svg",
