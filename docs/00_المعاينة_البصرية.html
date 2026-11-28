@@ -113,17 +113,15 @@ html[lang="en"] .lang-ar { display: none !important; }
 
 /* ============ Notes & Callouts ============ */
 .intro-note {
-  background: var(--warn-bg); border-left: 5px solid var(--warn-border);
+  background: var(--warn-bg); border-inline-start: 5px solid var(--warn-border);
   border-radius: 10px; padding: 14px 18px; margin: 22px 0; font-size: 14px;
 }
-html[dir="rtl"] .intro-note { border-left: none; border-right: 5px solid var(--warn-border); }
 .intro-note b { color: var(--warn-border); }
 .callout {
-  background: var(--warn-bg); border-left: 5px solid var(--warn-border);
+  background: var(--warn-bg); border-inline-start: 5px solid var(--warn-border);
   padding: 12px 14px; margin: 12px 0; border-radius: 8px;
   font-size: 13px; font-weight: 600;
 }
-html[dir="rtl"] .callout { border-left: none; border-right: 5px solid var(--warn-border); }
 
 /* ============ Section Titles ============ */
 .section-title {
@@ -157,7 +155,9 @@ html[dir="rtl"] .callout { border-left: none; border-right: 5px solid var(--warn
 .photo {
   border: 1px solid var(--border); border-radius: 11px;
   overflow: hidden; background: var(--bg); margin: 10px 0; cursor: zoom-in;
+  transition: var(--transition);
 }
+.photo:focus-visible { outline: 3px solid var(--accent-2); outline-offset: 3px; }
 .photo img {
   width: 100%; height: 230px; object-fit: contain;
   background: var(--bg); transition: transform .25s;
@@ -187,6 +187,7 @@ html[dir="rtl"] .callout { border-left: none; border-right: 5px solid var(--warn
   font-size: 13px; color: var(--text); opacity: .72;
   border-top: 1px solid var(--border);
 }
+.footer .brand { color: #990000; }
 
 /* ============ Lightbox ============ */
 .lightbox {
@@ -204,6 +205,7 @@ html[dir="rtl"] .callout { border-left: none; border-right: 5px solid var(--warn
   border: 0; border-radius: 50%; width: 44px; height: 44px;
   cursor: pointer; font-size: 22px;
 }
+.lightbox-close:hover { background: rgba(255, 255, 255, .3); }
 .lightbox-caption {
   position: absolute; bottom: 18px; left: 10px; right: 10px;
   text-align: center; color: #fff; font-size: 13px;
@@ -284,7 +286,7 @@ html[dir="rtl"] .callout { border-left: none; border-right: 5px solid var(--warn
 
 <!-- ============ Topbar ============ -->
 <header class="topbar">
-  <button class="topbar-btn" onclick="history.back()" title="Back">
+  <button class="topbar-btn" onclick="goBack()" title="Back" aria-label="Back">
     ← <span class="label">
       <span class="lang-ar">رجوع</span>
       <span class="lang-en">Back</span>
@@ -297,12 +299,12 @@ html[dir="rtl"] .callout { border-left: none; border-right: 5px solid var(--warn
   </div>
 
   <div class="topbar-btn-group">
-    <button class="topbar-btn" onclick="toggleLang()" title="Change language" id="langBtn">
+    <button class="topbar-btn" onclick="toggleLang()" title="Change language" id="langBtn" aria-label="Change language">
       <span class="lang-ar">🌐 EN</span>
       <span class="lang-en">🌐 ع</span>
     </button>
-    <button class="topbar-btn" onclick="toggleTheme()" title="Change theme">🌓</button>
-    <button class="topbar-btn" onclick="window.print()" title="Print page">
+    <button class="topbar-btn" onclick="toggleTheme()" title="Change theme" aria-label="Change theme">🌓</button>
+    <button class="topbar-btn" onclick="window.print()" title="Print page" aria-label="Print">
       🖨️ <span class="label">
         <span class="lang-ar">طباعة</span>
         <span class="lang-en">Print</span>
@@ -465,7 +467,9 @@ html[dir="rtl"] .callout { border-left: none; border-right: 5px solid var(--warn
         <span class="lang-ar">🖐️ النموذج المادي</span>
         <span class="lang-en">🖐️ THE PHYSICAL PROTOTYPE</span>
       </h2>
-      <figure class="photo hero-photo" onclick="openLightbox(this)">
+      <figure class="photo hero-photo" role="button" tabindex="0"
+              onclick="openLightbox(this)"
+              onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLightbox(this);}">
         <img src="https://alostoura-official.github.io/MARO-Smart-Sign-Glove/assets/images/glove-prototype.png"
              alt="MARO Smart Sign Glove physical prototype" loading="lazy">
         <figcaption>
@@ -485,28 +489,36 @@ html[dir="rtl"] .callout { border-left: none; border-right: 5px solid var(--warn
         <span class="lang-en">🔧 HARDWARE &amp; BUILD DOCUMENTATION</span>
       </h2>
       <div class="gallery">
-        <figure class="photo" onclick="openLightbox(this)">
+        <figure class="photo" role="button" tabindex="0"
+                onclick="openLightbox(this)"
+                onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLightbox(this);}">
           <img src="https://alostoura-official.github.io/MARO-Smart-Sign-Glove/assets/images/SmartSignPic1.jpg" alt="Flex sensors and ESP32 board" loading="lazy">
           <figcaption>
             <span class="lang-ar">مستشعرات الانحناء وشريحة ESP32</span>
             <span class="lang-en">Flex sensors and ESP32</span>
           </figcaption>
         </figure>
-        <figure class="photo" onclick="openLightbox(this)">
+        <figure class="photo" role="button" tabindex="0"
+                onclick="openLightbox(this)"
+                onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLightbox(this);}">
           <img src="https://alostoura-official.github.io/MARO-Smart-Sign-Glove/assets/images/glove-wiring.jpg" alt="Glove wiring and breadboard" loading="lazy">
           <figcaption>
             <span class="lang-ar">التوصيلات ولوحة التجارب</span>
             <span class="lang-en">Wiring and breadboard</span>
           </figcaption>
         </figure>
-        <figure class="photo" onclick="openLightbox(this)">
+        <figure class="photo" role="button" tabindex="0"
+                onclick="openLightbox(this)"
+                onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLightbox(this);}">
           <img src="https://alostoura-official.github.io/MARO-Smart-Sign-Glove/assets/images/SmartSignPic2.jpg" alt="Prototype circuit assembly" loading="lazy">
           <figcaption>
             <span class="lang-ar">تجميع الدائرة</span>
             <span class="lang-en">Circuit assembly</span>
           </figcaption>
         </figure>
-        <figure class="photo" onclick="openLightbox(this)">
+        <figure class="photo" role="button" tabindex="0"
+                onclick="openLightbox(this)"
+                onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLightbox(this);}">
           <img src="https://alostoura-official.github.io/MARO-Smart-Sign-Glove/assets/images/SmartSignPic3.jpg" alt="ESP32 and motion sensor assembly" loading="lazy">
           <figcaption>
             <span class="lang-ar">ESP32 ومستشعر الحركة</span>
@@ -523,7 +535,9 @@ html[dir="rtl"] .callout { border-left: none; border-right: 5px solid var(--warn
         <span class="lang-ar">📍 تخطيط المستشعرات</span>
         <span class="lang-en">📍 SENSOR LAYOUT</span>
       </h2>
-      <figure class="photo" onclick="openLightbox(this)">
+      <figure class="photo" role="button" tabindex="0"
+              onclick="openLightbox(this)"
+              onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLightbox(this);}">
         <img src="https://alostoura-official.github.io/MARO-Smart-Sign-Glove/assets/images/sensor-layout.png"
              alt="Project sensor placement diagram" loading="lazy">
         <figcaption>
@@ -737,15 +751,15 @@ html[dir="rtl"] .callout { border-left: none; border-right: 5px solid var(--warn
     <span class="lang-ar">قفاز مارو الذكي للإشارات · التقنيات المساعدة · الأنظمة المدمجة والبرمجيات</span>
     <span class="lang-en">MARO Smart Sign Glove · Assistive Technology · Embedded Systems &amp; Software</span>
     <br>
-    <span class="lang-ar">جميع الحقوق محفوظة ©</span>
-    <span class="lang-en">All rights reserved ©</span>
+    <span class="lang-ar">جميع الحقوق محفوظة © <strong class="brand">الأسطورة</strong> </span>
+    <span class="lang-en">All rights reserved © <strong class="brand">Alostoura</strong> </span>
     <span id="year"></span>
   </footer>
 
 </div>
 
 <!-- ============ Lightbox ============ -->
-<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image preview" onclick="closeLightbox(event)">
   <button class="lightbox-close" onclick="closeLightbox(event, true)" aria-label="Close">✕</button>
   <img id="lightboxImage" src="" alt="Expanded project image">
   <div class="lightbox-caption" id="lightboxCaption"></div>
@@ -754,6 +768,12 @@ html[dir="rtl"] .callout { border-left: none; border-right: 5px solid var(--warn
 <script>
 /* ============ Year ============ */
 document.getElementById("year").textContent = new Date().getFullYear();
+
+/* ============ Safe Back ============ */
+function goBack() {
+  if (history.length > 1) history.back();
+  else window.location.href = "https://alostoura-official.github.io/MARO-Smart-Sign-Glove/";
+}
 
 /* ============ Language Toggle ============ */
 function setLang(lang) {
@@ -794,22 +814,29 @@ function openLightbox(figure) {
   const img = figure.querySelector("img");
   if (!img) return;
   const box = document.getElementById("lightbox");
-  document.getElementById("lightboxImage").src = img.currentSrc || img.src;
-  document.getElementById("lightboxImage").alt = img.alt || "Project image";
+  const lbImg = document.getElementById("lightboxImage");
+  lbImg.src = img.currentSrc || img.src;
+  lbImg.alt = img.alt || "Project image";
   const cap = figure.querySelector("figcaption");
   document.getElementById("lightboxCaption").textContent = cap ? cap.innerText.trim() : (img.alt || "");
   box.classList.add("show");
+  document.body.style.overflow = "hidden";
 }
 function closeLightbox(event, force) {
   if (!force && event && event.target !== event.currentTarget) return;
   const box = document.getElementById("lightbox");
   box.classList.remove("show");
   document.getElementById("lightboxImage").src = "";
+  document.body.style.overflow = "";
 }
 document.addEventListener("keydown", function (e) {
   if (e.key === "Escape") {
-    document.getElementById("lightbox").classList.remove("show");
-    document.getElementById("lightboxImage").src = "";
+    const box = document.getElementById("lightbox");
+    if (box.classList.contains("show")) {
+      box.classList.remove("show");
+      document.getElementById("lightboxImage").src = "";
+      document.body.style.overflow = "";
+    }
   }
 });
 </script>
