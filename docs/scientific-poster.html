@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#123f73">
+<meta name="description" content="MARO SMART SIGN GLOVE — Scientific Project Poster (AR/EN) · Embedded Systems & Software">
+<title>Scientific Poster — MARO Smart Sign Glove | قفاز مارو الذكي</title>
+<style>
+:root{
+  --bg:#e9eef5;--panel:#fff;--ink:#172536;--muted:#536579;--blue:#164f87;
+  --blue2:#0d3763;--line:#d5dfeb;--soft:#f2f6fb;--shadow:0 12px 34px rgba(15,39,66,.14);
+  --brand:#990000;
+}
+html[data-theme="dark"]{
+  --bg:#101722;--panel:#172332;--ink:#e8eff7;--muted:#afbdcc;--blue:#77b8f4;
+  --blue2:#173f67;--line:#34465a;--soft:#1d2c3d;--shadow:0 12px 34px rgba(0,0,0,.32);
+  --brand:#f2b6b6;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+
+/* إخفاء اللغة غير النشطة */
+html[lang="ar"] .lang-en{display:none!important}
+html[lang="en"] .lang-ar{display:none!important}
+
+/* ===== Toolbar ===== */
+.toolbar{
+  position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:center;
+  gap:10px;padding:12px;background:rgba(13,38,66,.96);box-shadow:0 4px 18px #0002;flex-wrap:wrap
+}
+.toolbar button{
+  border:1px solid #ffffff50;border-radius:9px;padding:10px 16px;background:#fff;color:#12385f;
+  font-weight:700;cursor:pointer;font-size:14px;font-family:inherit
+}
+.toolbar button:hover{background:#dceeff}
+.toolbar .hint{color:#dce9f7;font-size:12px;margin:0 8px}
+
+/* ===== Stage & Poster ===== */
+.stage{width:100%;overflow:auto;padding:24px}
+.poster{
+  width:48in;min-height:36in;height:36in;margin:0 auto;background:var(--panel);
+  box-shadow:var(--shadow);display:grid;grid-template-rows:3.2in 1fr .42in;
+  color:var(--ink);overflow:hidden
+}
+.poster-header{
+  background:linear-gradient(120deg,#0d3763,#1766a5);color:#fff;padding:.42in .62in;
+  display:flex;flex-direction:column;justify-content:center;text-align:center
+}
+.poster-header h1{font-size:42pt;line-height:1.05;margin:0 0 .16in;font-weight:800;letter-spacing:1.3pt}
+.poster-header .subtitle{font-size:21pt;line-height:1.2;margin:0 0 .16in;font-weight:600}
+.poster-header .meta{font-size:12.5pt;line-height:1.4;color:#e5f1ff}
+
+/* ===== Content grid ===== */
+.content{display:grid;grid-template-columns:1fr 1.92fr 1fr;gap:.22in;padding:.22in .3in;min-height:0}
+.col{display:flex;flex-direction:column;gap:.15in;min-width:0;min-height:0}
+
+.section{border:1.5pt solid var(--line);border-radius:9pt;background:var(--panel);overflow:hidden;break-inside:avoid}
+.section h2{
+  margin:0;padding:.105in .15in;background:var(--blue);color:#fff;font-size:15pt;
+  line-height:1.15;letter-spacing:.45pt;font-weight:800
+}
+.section .body{padding:.13in .16in;font-size:10.6pt;line-height:1.36;color:var(--ink)}
+.section p{margin:0 0 .09in}
+.section p:last-child{margin-bottom:0}
+.section ul,.section ol{margin:.04in 0 .02in;padding-inline-start:.22in}
+.section li{margin:0 0 .045in}
+.section strong{color:var(--blue)}
+.center-section .body{font-size:10.2pt}
+
+.hero-image{width:100%;height:3.25in;object-fit:contain;background:var(--soft);border:1px solid var(--line);border-radius:5pt;cursor:zoom-in}
+.image-grid{display:grid;grid-template-columns:1fr 1fr;gap:.10in}
+.image-grid img{width:100%;height:1.7in;object-fit:cover;background:var(--soft);border:1px solid var(--line);border-radius:5pt;cursor:zoom-in}
+
+.workflow{display:grid;grid-template-columns:repeat(5,1fr);gap:.07in;margin:.12in 0}
+.workflow div{background:var(--soft);border:1px solid var(--line);border-radius:6pt;padding:.09in .04in;text-align:center}
+.workflow b{display:block;color:var(--blue);font-size:11pt;margin-bottom:.035in}
+.workflow span{display:block;font-size:8.6pt;color:var(--muted)}
+
+.link-list a{color:var(--blue);overflow-wrap:anywhere}
+.poster-footer{background:#0d3763;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 .45in;font-size:10pt}
+.poster-footer a{color:#fff}
+.poster-footer .brand{color:#ffb3b3}
+.note{color:var(--muted);font-style:italic}
+
+/* ===== Lightbox ===== */
+.lightbox{display:none;position:fixed;inset:0;z-index:50;background:#000e;align-items:center;justify-content:center;padding:30px}
+.lightbox.open{display:flex}
+.lightbox img{max-width:95vw;max-height:90vh;object-fit:contain;border-radius:8px;box-shadow:0 10px 40px #0008}
+.lightbox button{position:absolute;top:18px;right:22px;border:0;border-radius:50%;width:44px;height:44px;font-size:25px;cursor:pointer;background:#fff;color:#111}
+
+/* ===== Responsive ===== */
+@media(max-width:900px){
+  .stage{padding:12px;overflow:visible}
+  .poster{width:100%;height:auto;min-height:0;display:block;overflow:visible}
+  .poster-header{padding:28px 18px}
+  .poster-header h1{font-size:clamp(25px,6vw,42px)}
+  .poster-header .subtitle{font-size:clamp(15px,3.4vw,22px)}
+  .poster-header .meta{font-size:12px}
+  .content{display:flex;flex-direction:column;padding:12px;gap:12px}
+  .col{gap:12px}
+  .section h2{font-size:15px;padding:10px 12px}
+  .section .body,.center-section .body{font-size:14px;line-height:1.5;padding:12px}
+  .hero-image{height:auto;max-height:420px}
+  .image-grid img{height:clamp(120px,35vw,240px)}
+  .workflow{grid-template-columns:repeat(2,1fr)}
+  .workflow div:last-child{grid-column:1/-1}
+  .poster-footer{padding:12px;gap:8px;flex-wrap:wrap;font-size:11px}
+}
+
+/* ===== Print ===== */
+@media print{
+  @page{size:48in 36in;margin:0}
+  html,body{width:48in;height:36in;margin:0!important;padding:0!important;background:#fff!important}
+  .toolbar,.lightbox{display:none!important}
+  .stage{padding:0!important;margin:0!important;overflow:visible!important}
+  .poster{
+    width:48in!important;height:36in!important;min-height:36in!important;margin:0!important;
+    box-shadow:none!important;overflow:hidden!important;display:grid!important;
+    grid-template-rows:3.2in 1fr .42in!important;page-break-after:avoid;break-after:avoid
+  }
+  .poster-header{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .content{display:grid!important;grid-template-columns:1fr 1.92fr 1fr!important;gap:.22in!important;padding:.22in .3in!important}
+  .col{display:flex!important;flex-direction:column!important;gap:.15in!important}
+  .section,.section h2,.poster-footer{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .section{break-inside:avoid}
+  a{color:inherit;text-decoration:none}
+}
+</style>
+</head>
+<body>
+<nav class="toolbar" aria-label="Poster controls">
+  <button type="button" onclick="goBack()">
+    ← <span class="lang-ar">رجوع</span><span class="lang-en">Back</span>
+  </button>
+  <button type="button" id="langToggle" aria-label="Change language">
+    <span class="lang-ar">🌐 EN</span><span class="lang-en">🌐 ع</span>
+  </button>
+  <button type="button" id="themeToggle" aria-label="Change theme">
+    <span class="lang-ar">☾ الوضع الليلي</span><span class="lang-en">☾ Dark mode</span>
+  </button>
+  <button type="button" onclick="window.print()">
+    <span class="lang-ar">🖨️ طباعة بوستر 48 × 36 بوصة</span><span class="lang-en">🖨️ Print 48 × 36 in poster</span>
+  </button>
+  <span class="hint">
+    <span class="lang-ar">اضغط أي صورة للتكبير · الطباعة مضبوطة على 48 × 36 بوصة</span>
+    <span class="lang-en">Tap any image to enlarge · Print is set to 48 × 36 inches</span>
+  </span>
+</nav>
+
+<div class="stage">
+<div class="poster">
+  <header class="poster-header">
+    <h1>
+      <span class="lang-ar">قفاز مارو الذكي للإشارات</span>
+      <span class="lang-en">MARO SMART SIGN GLOVE</span>
+    </h1>
+    <p class="subtitle">
+      <span class="lang-ar">نموذج أولي قابل للارتداء للتعرف على إيماءات الإشارة وإخراج الصوت</span>
+      <span class="lang-en">A Wearable Prototype for Sign Gesture Recognition and Speech Output</span>
+    </p>
+    <p class="meta">
+      <span class="lang-ar">الأنظمة المدمجة والبرمجيات · البحث العلمي وتطوير النماذج الأولية</span>
+      <span class="lang-en">Embedded Systems &amp; Software · Scientific Research &amp; Prototype Development</span>
+    </p>
+  </header>
+
+  <main class="content">
+    <!-- ===== Column 1 ===== -->
+    <div class="col">
+      <section class="section">
+        <h2>
+          <span class="lang-ar">📄 الملخص</span>
+          <span class="lang-en">ABSTRACT</span>
+        </h2>
+        <div class="body">
+          <div class="lang-ar">
+            <p>يقدّم هذا المشروع تطوير نموذج أولي منخفض التكلفة لقفاز قابل للارتداء، مصمم للتعرف على مجموعة محدودة من إيماءات اليد المدربة وتحويلها إلى نص ومخرجات منطوقة. يجمع النظام المقترح بين مستشعرات الانحناء واستشعار الحركة مع متحكم ESP32، ثم يعرض النتيجة عبر مكونات الإخراج المرتبطة.</p>
+            <p>النموذج الأولي إثبات مبدئي تجريبي. تعتمد قدرة التعرف على الإيماءات وقراءات المستشعرات والأمثلة المستخدمة أثناء المعايرة والتدريب.</p>
+          </div>
+          <div class="lang-en">
+            <p>This project presents the development of a low-cost wearable glove prototype designed to recognize a limited set of trained hand gestures and convert the recognized gestures into text and spoken output. The proposed system combines flex sensors and motion sensing with an ESP32 controller, then presents the recognized result through connected output components.</p>
+            <p>The prototype is an experimental proof of concept. Its recognition capability depends on the gestures, sensor readings and examples used during calibration and training.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>
+          <span class="lang-ar">📘 المقدمة</span>
+          <span class="lang-en">INTRODUCTION</span>
+        </h2>
+        <div class="body">
+          <div class="lang-ar">
+            <p>قد يكون التواصل بين الصم أو غير القادرين على الكلام والأشخاص الذين لا يعرفون لغة الإشارة صعباً في المواقف اليومية. يستكشف هذا المشروع مقاربة إلكترونية قابلة للارتداء يمكن أن تساعد في جسر جزء من هذه الفجوة عبر ترجمة إيماءات يد مختارة إلى مخرجات مقروءة ومسموعة.</p>
+          </div>
+          <div class="lang-en">
+            <p>Communication between deaf or non-speaking people and people who do not know sign language can be difficult in everyday situations. This project explores an electronic wearable approach that can help bridge part of this communication gap by translating selected hand gestures into readable and audible output.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>
+          <span class="lang-ar">❓ سؤال البحث</span>
+          <span class="lang-en">RESEARCH QUESTION</span>
+        </h2>
+        <div class="body">
+          <div class="lang-ar">
+            <p>هل يمكن لقفاز ميسور التكلفة قائم على ESP32 استخدام قياسات ثني الأصابع وحركة اليد لتحديد مجموعة مختارة من الإيماءات المدربة وعرض معانيها نصاً وكلاماً؟</p>
+          </div>
+          <div class="lang-en">
+            <p>Can an affordable ESP32-based glove use finger-flex and hand-motion measurements to identify a selected set of trained gestures and present their meanings as text and speech?</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>
+          <span class="lang-ar">🧪 الفرضية</span>
+          <span class="lang-en">HYPOTHESIS</span>
+        </h2>
+        <div class="body">
+          <div class="lang-ar">
+            <p>إذا تم قياس انحناء الأصابع وحركة اليد بشكل متسق وربطها بأنماط إيماءات معايرة، فإن نموذجاً أولياً قائماً على متحكم دقيق يمكنه التعرف على إيماءات مختارة وتقديم تغذية راجعة نصية وصوتية مقابلة.</p>
+          </div>
+          <div class="lang-en">
+            <p>If finger bending and hand movement are measured consistently and mapped to calibrated gesture patterns, then a microcontroller-based prototype can recognize selected gestures and provide corresponding text and audio feedback.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>
+          <span class="lang-ar">🎯 أهداف المشروع</span>
+          <span class="lang-en">PROJECT OBJECTIVES</span>
+        </h2>
+        <div class="body">
+          <ul class="lang-ar">
+            <li>بناء نموذج أولي قابل للارتداء باستخدام مكونات إلكترونية ميسورة التكلفة</li>
+            <li>قياس انحناء الأصابع واتجاه اليد</li>
+            <li>معالجة قراءات المستشعرات باستخدام متحكم ESP32</li>
+            <li>ربط أنماط الإيماءات المدربة بمخرجات نصية</li>
+            <li>توفير مخرجات منطوقة للإيماءات المتعرَّف عليها</li>
+            <li>تأسيس أساس للاختبار والتطوير المستقبلي</li>
+          </ul>
+          <ul class="lang-en">
+            <li>Build a wearable prototype using affordable electronic components</li>
+            <li>Measure finger bending and hand orientation</li>
+            <li>Process sensor readings using an ESP32 microcontroller</li>
+            <li>Map trained gesture patterns to text output</li>
+            <li>Provide spoken output for recognized gestures</li>
+            <li>Establish a foundation for future testing and improvement</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+
+    <!-- ===== Column 2 ===== -->
+    <div class="col">
+      <section class="section center-section">
+        <h2>
+          <span class="lang-ar">🖐️ النموذج المادي</span>
+          <span class="lang-en">THE PHYSICAL PROTOTYPE</span>
+        </h2>
+        <div class="body">
+          <img class="hero-image zoomable" src="https://alostoura-official.github.io/MARO-Smart-Sign-Glove/assets/images/glove-prototype.png" alt="MARO Smart Sign Glove physical prototype" loading="lazy">
+          <p class="note">
+            <span class="lang-ar">صورة النموذج المادي. يدمج القفاز وحدات الاستشعار والمعالجة والإخراج.</span>
+            <span class="lang-en">Physical prototype view. The glove integrates sensing, processing and output modules.</span>
+          </p>
+        </div>
+      </section>
+
+      <section class="section center-section">
+        <h2>
+          <span class="lang-ar">⚙️ المنهجية وسير عمل النظام</span>
+          <span class="lang-en">METHODOLOGY &amp; SYSTEM WORKFLOW</span>
+        </h2>
+        <div class="body">
+          <p>
+            <span class="lang-ar">يتبع النظام سير عمل من المستشعر إلى الإخراج. يقرأ المتحكم قيم المستشعرات ويقارنها بأنماط الإيماءات المضبوطة في النموذج الأولي.</span>
+            <span class="lang-en">The system follows a sensor-to-output workflow. Sensor values are read by the controller and compared with the gesture patterns configured for the prototype.</span>
+          </p>
+          <div class="workflow">
+            <div>
+              <b>1 · <span class="lang-ar">استشعار</span><span class="lang-en">SENSE</span></b>
+              <span class="lang-ar">تلتقط المستشعرات وضعية اليد</span>
+              <span class="lang-en">Flex and motion sensors capture hand position</span>
+            </div>
+            <div>
+              <b>2 · <span class="lang-ar">قراءة</span><span class="lang-en">READ</span></b>
+              <span class="lang-ar">يقرأ ESP32 القيم ويعالجها</span>
+              <span class="lang-en">ESP32 reads and processes sensor values</span>
+            </div>
+            <div>
+              <b>3 · <span class="lang-ar">مطابقة</span><span class="lang-en">MATCH</span></b>
+              <span class="lang-ar">مقارنة بالأنماط المدربة</span>
+              <span class="lang-en">Readings are compared with trained patterns</span>
+            </div>
+            <div>
+              <b>4 · <span class="lang-ar">عرض</span><span class="lang-en">DISPLAY</span></b>
+              <span class="lang-ar">إظهار النتيجة نصاً</span>
+              <span class="lang-en">Recognized result is shown as text</span>
+            </div>
+            <div>
+              <b>5 · <span class="lang-ar">نطق</span><span class="lang-en">SPEAK</span></b>
+              <span class="lang-ar">إخراج صوتي يعلن النتيجة</span>
+              <span class="lang-en">Audio output announces the mapped result</span>
+            </div>
+          </div>
+          <p class="note">
+            <span class="lang-ar">التعرف محدود بمجموعة الإيماءات المنفَّذة والمعايرة في النموذج الأولي.</span>
+            <span class="lang-en">Recognition is limited to the gesture set implemented and calibrated in the prototype.</span>
+          </p>
+        </div>
+      </section>
+
+      <section class="section center-section">
+        <h2>
+          <span class="lang-ar">🔧 العتاد وتوثيق البناء</span>
+          <span class="lang-en">HARDWARE &amp; BUILD DOCUMENTATION</span>
+        </h2>
+        <div class="body">
+          <div class="image-grid">
+            <img class="zoomable" src="https://alostoura-official.github.io/MARO-Smart-Sign-Glove/assets/images/SmartSignPic1.jpg" alt="Prototype build documentation image 1" loading="lazy">
+            <img class="zoomable" src="https://alostoura-official.github.io/MARO-Smart-Sign-Glove/assets/images/glove-wiring.jpg" alt="Glove wiring documentation" loading="lazy">
+            <img class="zoomable" src="https://alostoura-official.github.io/MARO-Smart-Sign-Glove/assets/images/SmartSignPic2.jpg" alt="Prototype build documentation image 2" loading="lazy">
+            <img class="zoomable" src="https://alostoura-official.github.io/MARO-Smart-Sign-Glove/assets/images/SmartSignPic3.jpg" alt="Prototype build documentation image 3" loading="lazy">
+          </div>
+          <p>
+            <span class="lang-ar">بنية العتاد الأساسية: متحكم ESP32-WROOM-32، خمسة مستشعرات انحناء، مستشعر حركة MPU6050، شاشة OLED SSD1306، وحدة صوت DFPlayer Mini، مكبر صوت، بطارية قابلة للشحن، وحدة شحن TP4056 وتنظيم الجهد.</span>
+            <span class="lang-en">Core hardware architecture: ESP32-WROOM-32 controller, five flex sensors, MPU6050 motion sensor, SSD1306 OLED display, DFPlayer Mini audio module, speaker, rechargeable battery, TP4056 charging module and voltage regulation.</span>
+          </p>
+        </div>
+      </section>
+
+      <section class="section center-section">
+        <h2>
+          <span class="lang-ar">🧰 الإجراء</span>
+          <span class="lang-en">PROCEDURE</span>
+        </h2>
+        <div class="body">
+          <ol class="lang-ar">
+            <li>تجميع القفاز وتثبيت المستشعرات في مواقعها المقصودة</li>
+            <li>توصيل وحدات الاستشعار والإخراج بـ ESP32</li>
+            <li>قراءة قيم المستشعرات ومعايرة نطاقات الإدخال</li>
+            <li>تسجيل وإعداد أنماط الإيماءات المستخدمة في النموذج الأولي</li>
+            <li>تشغيل سير عمل التعرف وفحص المخرجات النصية والصوتية</li>
+            <li>تكرار الاختبارات وتحسين المعايرة عند الحاجة</li>
+          </ol>
+          <ol class="lang-en">
+            <li>Assemble the glove and mount the sensors in their intended positions</li>
+            <li>Connect the sensing and output modules to the ESP32</li>
+            <li>Read sensor values and calibrate the input ranges</li>
+            <li>Record and configure the gesture patterns used by the prototype</li>
+            <li>Run the recognition workflow and check the text and audio outputs</li>
+            <li>Repeat tests and refine calibration where required</li>
+          </ol>
+        </div>
+      </section>
+    </div>
+
+    <!-- ===== Column 3 ===== -->
+    <div class="col">
+      <section class="section">
+        <h2>
+          <span class="lang-ar">📈 التحليل</span>
+          <span class="lang-en">ANALYSIS</span>
+        </h2>
+        <div class="body">
+          <img class="hero-image zoomable" style="height:2.25in" src="https://alostoura-official.github.io/MARO-Smart-Sign-Glove/assets/images/sensor-layout.png" alt="Sensor layout diagram" loading="lazy">
+          <p>
+            <span class="lang-ar">توفّر مستشعرات الانحناء قياسات مرتبطة بثني الأصابع، بينما توفّر وحدة MPU6050 قياسات الحركة والاتجاه. يستخدم المتحكم هذه المدخلات لتمييز أنماط الإيماءات المضبوطة. يعتمد التعرف الموثوق على ثبات موضع المستشعرات والمعايرة وثبات وضعية اليد.</span>
+            <span class="lang-en">Flex sensors provide measurements associated with finger bending, while the MPU6050 provides motion and orientation measurements. The controller uses these inputs to distinguish configured gesture patterns. Reliable recognition depends on consistent sensor placement, calibration and repeatable hand positioning.</span>
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>
+          <span class="lang-ar">🧾 النتائج والحالة الحالية</span>
+          <span class="lang-en">RESULTS &amp; CURRENT STATUS</span>
+        </h2>
+        <div class="body">
+          <div class="lang-ar">
+            <p>النتيجة الحالية هي نموذج أولي تجريبي وسير عمل برمجي يهدف إلى إثبات مفهوم الاستشعار والإخراج. النظام مصمم للتعرف على إيماءات مختارة مضبوطة وتقديم تغذية راجعة نصية وصوتية مقابلة.</p>
+            <p>لا يتم ادعاء أي دقة كمية أو نتيجة دراسة مستخدمين شاملة هنا. تتطلب هذه النتائج بروتوكول اختبار موثقاً ومجموعة بيانات إيماءات محددة ومحاولات متكررة.</p>
+          </div>
+          <div class="lang-en">
+            <p>The current outcome is an experimental prototype and a software workflow intended to demonstrate the sensing and output concept. The system is designed to identify selected configured gestures and provide corresponding text and audio feedback.</p>
+            <p>No quantified accuracy rate or comprehensive user-study result is claimed here. Such results require a documented test protocol, a defined gesture dataset and repeated trials.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>
+          <span class="lang-ar">✅ الاستنتاجات</span>
+          <span class="lang-en">CONCLUSIONS</span>
+        </h2>
+        <div class="body">
+          <div class="lang-ar">
+            <p>يُظهر المشروع اتجاهاً عملياً لنموذج أولي منخفض التكلفة قابل للارتداء للتعرف على الإيماءات. يمكن للجمع بين استشعار الانحناء واستشعار الحركة والمعالجة المدمجة أن يوفّر أساساً لترجمة مجموعة محدودة من إيماءات اليد المدربة إلى نص وكلام.</p>
+          </div>
+          <div class="lang-en">
+            <p>The project demonstrates a practical direction for a low-cost wearable gesture-recognition prototype. Combining flex sensing, motion sensing and embedded processing can provide a basis for translating a limited set of trained hand gestures into text and speech.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>
+          <span class="lang-ar">⚠️ القيود والعمل المستقبلي</span>
+          <span class="lang-en">LIMITATIONS &amp; FUTURE WORK</span>
+        </h2>
+        <div class="body">
+          <ul class="lang-ar">
+            <li>يتعرف النموذج الحالي على الإيماءات المضبوطة والمختبرة فقط</li>
+            <li>قد تختلف قراءات المستشعرات حسب ملاءمة القفاز ووضعية اليد والمعايرة</li>
+            <li>تشمل لغات الإشارة الكاملة الحركة وتعبيرات الوجه والقواعد النحوية والسياق بما يتجاوز أشكال اليد المنفردة</li>
+            <li>العمل المستقبلي: توسيع مجموعة الإيماءات، وإجراء اختبارات دقة منظمة، وتحسين المعايرة، وتقييم التعرف في بيئات تواصل حقيقية</li>
+            <li>استكشاف مساعدة برمجية واعية بالسياق كمرحلة تطوير مستقبلية منفصلة</li>
+          </ul>
+          <ul class="lang-en">
+            <li>The current prototype recognizes only the gestures specifically configured and tested</li>
+            <li>Sensor readings can vary with glove fit, hand position and calibration</li>
+            <li>Full sign languages include motion, facial expression, grammar and context beyond isolated hand shapes</li>
+            <li>Future work: expand the gesture dataset, conduct structured accuracy tests, improve calibration and evaluate recognition in real communication settings</li>
+            <li>Explore context-aware software assistance as a separate future development stage</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>
+          <span class="lang-ar">📚 المراجع وروابط المشروع</span>
+          <span class="lang-en">REFERENCES &amp; PROJECT LINKS</span>
+        </h2>
+        <div class="body link-list">
+          <p>
+            <strong><span class="lang-ar">مستودع المشروع / العرض التوضيحي:</span><span class="lang-en">Project repository / demonstration:</span></strong><br>
+            <a href="https://alostoura-official.github.io/MARO-Smart-Sign-Glove/" target="_blank" rel="noopener">
+              <span class="lang-ar">قفاز مارو الذكي للإشارات</span>
+              <span class="lang-en">MARO Smart Sign Glove</span>
+            </a>
+          </p>
+          <p>
+            <strong><span class="lang-ar">محاكي وضعية اليد:</span><span class="lang-en">Hand pose simulator:</span></strong><br>
+            <a href="https://alostoura-official.github.io/hand-pose-simulator/" target="_blank" rel="noopener">
+              <span class="lang-ar">محاكي ثلاثي الأبعاد لوضعيات اليد</span>
+              <span class="lang-en">3D Hand Pose Simulator</span>
+            </a>
+          </p>
+          <p>
+            <strong><span class="lang-ar">التوثيق الفني لـ ESP32:</span><span class="lang-en">ESP32 technical documentation:</span></strong><br>
+            <a href="https://docs.espressif.com/" target="_blank" rel="noopener">
+              <span class="lang-ar">توثيق إسبريسيف</span>
+              <span class="lang-en">Espressif Documentation</span>
+            </a>
+          </p>
+          <p class="note">
+            <span class="lang-ar">روابط المشروع والتوثيق الفني للرجوع إليها. المحاكي عرض برمجي منفصل وليس آلية الاستشعار الفيزيائية للقفاز.</span>
+            <span class="lang-en">Project links and technical documentation are provided for reference. The simulator is a separate software demonstration and is not the glove's physical sensing mechanism.</span>
+          </p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="poster-footer">
+    <span>
+      <span class="lang-ar">قفاز مارو الذكي للإشارات · الأنظمة المدمجة والبرمجيات</span>
+      <span class="lang-en">MARO SMART SIGN GLOVE · Embedded Systems &amp; Software</span>
+    </span>
+    <span>
+      <span class="lang-ar">نموذج أولي تجريبي · مجموعة الإيماءات محدودة بالأمثلة المضبوطة</span>
+      <span class="lang-en">Experimental prototype · Gesture set limited to configured examples</span>
+    </span>
+    <span>
+      <span class="lang-ar">جميع الحقوق محفوظة © <strong class="brand">الأسطورة</strong></span>
+      <span class="lang-en">All rights reserved © <strong class="brand">Ostora</strong></span>
+      <span id="year"></span>
+    </span>
+  </footer>
+</div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Expanded image">
+  <button type="button" id="closeLightbox" aria-label="Close image">×</button>
+  <img id="lightboxImage" src="" alt="">
+</div>
+
+<script>
+(function(){
+  const root=document.documentElement;
+
+  /* ===== Year ===== */
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  /* ===== Language ===== */
+  function setLang(lang){
+    root.setAttribute('lang',lang);
+    root.setAttribute('dir', lang==='ar' ? 'rtl' : 'ltr');
+    try{ localStorage.setItem('maro-lang',lang); }catch(e){}
+  }
+  const langToggle=document.getElementById('langToggle');
+  langToggle.addEventListener('click',()=>{
+    setLang(root.getAttribute('lang')==='ar' ? 'en' : 'ar');
+  });
+  try{
+    const savedLang=localStorage.getItem('maro-lang');
+    if(savedLang) setLang(savedLang);
+  }catch(e){}
+
+  /* ===== Theme ===== */
+  const themeToggle=document.getElementById('themeToggle');
+  try{
+    const saved=localStorage.getItem('maro-preview-theme');
+    if(saved==='dark'||saved==='light') root.setAttribute('data-theme',saved);
+  }catch(e){}
+  function updateThemeButton(){
+    const isDark = root.getAttribute('data-theme')==='dark';
+    themeToggle.querySelector('.lang-ar').textContent = isDark ? '☀ الوضع النهاري' : '☾ الوضع الليلي';
+    themeToggle.querySelector('.lang-en').textContent = isDark ? '☀ Light mode' : '☾ Dark mode';
+  }
+  updateThemeButton();
+  themeToggle.addEventListener('click',()=>{
+    const next = root.getAttribute('data-theme')==='dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme',next);
+    try{ localStorage.setItem('maro-preview-theme',next); }catch(e){}
+    updateThemeButton();
+  });
+
+  /* ===== Back ===== */
+  window.goBack = function(){
+    if(history.length>1) history.back();
+    else window.location.href='https://alostoura-official.github.io/MARO-Smart-Sign-Glove/';
+  };
+
+  /* ===== Lightbox ===== */
+  const lightbox=document.getElementById('lightbox');
+  const lightboxImage=document.getElementById('lightboxImage');
+  function closeLightbox(){
+    lightbox.classList.remove('open');
+    lightboxImage.src='';
+    document.body.style.overflow='';
+  }
+  document.querySelectorAll('.zoomable').forEach(img=>{
+    img.setAttribute('role','button');
+    img.setAttribute('tabindex','0');
+    function open(){
+      lightboxImage.src=img.src;
+      lightboxImage.alt=img.alt;
+      lightbox.classList.add('open');
+      document.body.style.overflow='hidden';
+    }
+    img.addEventListener('click',open);
+    img.addEventListener('keydown',e=>{
+      if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}
+    });
+  });
+  document.getElementById('closeLightbox').addEventListener('click',closeLightbox);
+  lightbox.addEventListener('click',e=>{ if(e.target===lightbox) closeLightbox(); });
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeLightbox(); });
+})();
+</script>
+</body>
+</html>
